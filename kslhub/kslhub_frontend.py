@@ -1,7 +1,7 @@
 #!/bin/env/python
 
 import argparse
-#from kslhub.jupyterhub.app import main
+from kslhub.jupyterhub.app import main
 import os
 import sys
 
