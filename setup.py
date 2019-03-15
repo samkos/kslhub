@@ -12,7 +12,6 @@ from codecs import open
 from os import path
 import glob
 
-from decimate import decimate
 
 here = path.abspath(path.dirname(__file__))
 
@@ -80,10 +79,10 @@ setup(
     # inserted into the package's metadata, which can be retrieved by using
     # `py-info <package>` on any installed package. the contents are not
     # validated to conform to any spec other than being a string
-    source_label = "a542aa8578486b315fab5958586e133749900cc7",
+    # source_label = "eb745f9bf1e0c6d749d5206f66cb41555fbb9013",
 
     # same with source_url, it's only in the metadata
-    source_url = "https://github.com/samkos/decimate/commit/a542aa8578486b315fab5958586e133749900cc7",
+    # source_url = "https://github.com/samkos/kslhub/commit/eb745f9bf1e0c6d749d5206f66cb41555fbb9013",
 
     # Classifiers help users find your project by categorizing it.
     #
@@ -154,7 +153,9 @@ setup(
                       'yapf',
                       'jupyter_contrib_nbextensions',
                       'jupyter_nbextensions_configurator ',
-                      'ipywidgets dask toolz',
+                      'ipywidgets',
+                      'dask',
+                      'toolz',
                       'cloudpickle ',
                       'distributed',
                       'dockerspawner',
@@ -207,8 +208,8 @@ setup(
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     data_files=[('.', ['LICENSE.txt', 'AUTHORS']),
 #                ('scripts', ['decimate/scripts/end_job.sh']),
-                ('tests', glob.glob('tests/*')),
-                ('share/man/man1',glob.glob('docs/man/man1/*'))
+#                ('tests', glob.glob('tests/*')),
+ #               ('share/man/man1',glob.glob('docs/man/man1/*'))
                 # ('docs', glob.glob('docs/*'))
     ],  # Optional
 
