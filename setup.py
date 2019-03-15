@@ -35,7 +35,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='decimate',  # Required
+    name='kslhub',  # Required
 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
@@ -43,12 +43,12 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version=decimate.DECIMATE_VERSION,  # Required
+    version=0.1,  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='A fault-tolerant SLURM scheduler extension',  # Required
+    description='klshub - a datahub based on jupyterhub ',  # Required
 
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
@@ -64,7 +64,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url='http://decimate.readthedocs.io',  # Optional
+    url='http://kslhub.readthedocs.io',  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
@@ -144,7 +144,37 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['ClusterShell', 'pandas'],  # Optional
+    install_requires=['cython',
+                      'notebook',
+                      'jupyterlab',
+                      'pandas',
+                      'matplotlib',
+                      'sympy  ',
+                      'bash_kernel',
+                      'yapf',
+                      'jupyter_contrib_nbextensions',
+                      'jupyter_nbextensions_configurator ',
+                      'ipywidgets dask toolz',
+                      'cloudpickle ',
+                      'distributed',
+                      'dockerspawner',
+                      'netifaces',
+                      'ipyparallel',
+                      'six>-1.11.0',
+                      'jupyter_contrib_nbextensions',
+                      'alembic',
+                      'async_generator>=1.8',
+                      'entrypoints',
+                      'traitlets>=4.3.2',
+                      'tornado>=5.0',
+                      'jinja2',
+                      'pamela',
+                      'oauthlib>=2,<3',
+                      'python-dateutil',
+                      'SQLAlchemy>=1.1',
+                      'requests',
+                      'prometheus_client>=0.0.21',
+                      'certipy>=0.1.2'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -168,7 +198,7 @@ setup(
         'sample': ['package_data.dat'],
     },
 
-    python_requires='>=2.7',
+    python_requires='>=3.6',
   
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -191,11 +221,7 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
           'console_scripts': [
-             'dbatch=decimate.slurm_frontend:batch',
-             'dkill=decimate.slurm_frontend:kill',
-             'dstat=decimate.slurm_frontend:stat',
-             'dlog=decimate.slurm_frontend:log',
-             'dconsole=decimate.slurm_frontend:console',
+             'kslhub=kslhub.kslhub_frontend:start',
          ],
      },
 )
