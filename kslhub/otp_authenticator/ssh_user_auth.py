@@ -166,21 +166,3 @@ class SshUserLocalAuthenticator(LocalAuthenticator):
     def authenticate(self, *args):
         raise NotImplementedError()
 
-
-
-
-# from tornado import gen
-# from IPython.utils.traitlets import Dict
-# from jupyterhub.auth import Authenticator
-
-# class MyAuthenticator(Authenticator):
-
-#     passwords = Dict(config=True,
-#         help="""dict of username:password for authentication"""
-#     )
-
-#     @gen.coroutine
-#     def authenticate(self, handler, data):        
-#         if data['username'] == data['password']:
-#             return data['username']
-    

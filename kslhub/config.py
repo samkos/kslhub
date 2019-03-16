@@ -21,7 +21,7 @@ c.Authenticator.hub_greeting_message = "Welcome to SK Dev Hub!"
 c.Authenticator.hub_name = "SK"
 
 
-c.JupyterHub.authenticator_class = 'kslhub.jhub_ssh_user_authenticator.jhub_ssh_user_authenticator.ssh_user_auth.SshUserAuthenticator'
+c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.ssh_user_auth.SshUserAuthenticator'
 c.JupyterHub.bind_url = 'http://%s:9000' % current_host
 c.JupyterHub.hub_bind_url = 'http://%s:9081' % current_host
 c.Spawner.cmd = ['jupyter-labhub']
@@ -30,24 +30,6 @@ c.Spawner.cmd = ['jupyter-labhub']
 c = get_config()
 
 c.SlurmSpawner.batch_script = '''#!/bin/bash
-echo ##################### env #############################
-env
-echo #######################################################
-
-export PATH=/home/kortass/APPS/miniconda3/bin:$PATH
-export MANPATH=/home/kortass/APPS/miniconda3/share/man:$MANPATH
-export LD_LIBRARY_PATH=/home/kortass/APPS/miniconda3/lib:$LD_LIBRARY_PATH
-export INCLUDE=/home/kortass/APPS/miniconda3/include:$INCLUDE
-
-
-
-export CONDA_DEFAULT_ENV=/home/kortass/APPS/miniconda3
-export CONDA_PREFIX=/home/kortass/APPS/miniconda3
-
-export DATASET_DIR=/home/kortass/DATASET_DIR
-export PYTHONPATH=/home/kortass/JUPYTER/ksl_lib/jupyterhub:$PYTHONPATH
-export PYTHONPATH=/home/kortass/JUPYTER/ksl_lib/batchspawner:$PYTHONPATH
-export PYTHONPATH=/home/kortass/JUPYTER/ksl_lib/jhub_ssh_user_authenticator:$PYTHONPATH
 
 
 export JUPYTERHUB_BASE_URL=/

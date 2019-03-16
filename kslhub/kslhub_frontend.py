@@ -1,7 +1,6 @@
 #!/bin/env/python
 
 import argparse
-from jupyterhub.jupyterhub.app import main
 import os
 import sys
 
@@ -40,7 +39,12 @@ class kslhub_frontend():
 def start():
     #main()
     K = kslhub_frontend()
-    print("should start the hub")
+    args = ""
+    if K.args.config:
+        args = args + "-f %s" % K.args.config
+    cmd = "jupyterhub %s" % args
+    print("should start the hub with command : /%s/" % cmd)
+    os.system(cmd)
 
   
 if __name__ == "__main__":
