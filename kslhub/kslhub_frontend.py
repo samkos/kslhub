@@ -1,7 +1,7 @@
 #!/bin/env/python
 
 import argparse
-from kslhub.jupyterhub.app import main
+from jupyterhub.jupyterhub.app import main
 import os
 import sys
 
@@ -24,7 +24,7 @@ class kslhub_frontend():
     self.parser.add_argument('--debug', action="count", default=0, help=argparse.SUPPRESS)
     self.parser.add_argument('--info', action="count", default=0, help=argparse.SUPPRESS)
 
-    self.parser.add_argument("--config", type=str, help='hub configuration file', default=False)
+    self.parser.add_argument("-f", "--config", type=str, help='hub configuration file', default=False)
     self.parser.add_argument("--port", type=int, help='port of the hub web interface (9000 per default)',
                              default=9000)
     self.parser.add_argument("--ip", type=int, help='address of the hub web interface (0.0.0.0 per default)',

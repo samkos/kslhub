@@ -46,7 +46,7 @@ from traitlets.config import Application, Configurable, catch_config_error
 
 here = os.path.dirname(__file__)
 
-import jupyterhub
+import jupyterhub.jupyterhub
 from . import handlers, apihandlers
 from .handlers.static import CacheControlStaticFilesHandler, LogoHandler
 from .services.service import Service
@@ -2271,6 +2271,7 @@ class JupyterHub(Application):
 
     @classmethod
     def launch_instance(cls, argv=None):
+        print("here")
         self = cls.instance()
         AsyncIOMainLoop().install()
         loop = IOLoop.current()

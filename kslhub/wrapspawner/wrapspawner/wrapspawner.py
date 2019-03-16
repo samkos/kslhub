@@ -30,7 +30,7 @@ import pprint
 from tornado import gen, concurrent
 
 from jupyterhub.spawner import LocalProcessSpawner, Spawner
-import batchspawner
+import kslhub.batchspawner
 
 
 from traitlets import (

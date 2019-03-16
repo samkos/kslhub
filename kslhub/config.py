@@ -21,7 +21,7 @@ c.Authenticator.hub_greeting_message = "Welcome to SK Dev Hub!"
 c.Authenticator.hub_name = "SK"
 
 
-c.JupyterHub.authenticator_class = 'jhub_ssh_user_authenticator.ssh_user_auth.SshUserAuthenticator'
+c.JupyterHub.authenticator_class = 'kslhub.jhub_ssh_user_authenticator.ssh_user_auth.jhub_ssh_user_authenticator.ssh_user_auth.SshUserAuthenticator'
 c.JupyterHub.bind_url = 'http://%s:9000' % current_host
 c.JupyterHub.hub_bind_url = 'http://%s:9081' % current_host
 c.Spawner.cmd = ['jupyter-labhub']
@@ -62,9 +62,9 @@ export CONFIGPROXY_AUTH_TOKEN=__SECRET__
 
 which jupyterhub-singleuser
 {cmd}
-''' %  (kslhub_root,kslhub_root,current_host)
+''' %  (current_host)
 
-c.JupyterHub.spawner_class = 'wrapspawner.ProfilesSpawner'
+c.JupyterHub.spawner_class = 'kslhub.wrapspawner.ProfilesSpawner'
 c.Spawner.http_timeout = 120
 c.BatchSpawnerBase.req_host = 'slurmd_1'
 c.BatchSpawnerBase.req_runtime = '12:00:00'

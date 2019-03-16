@@ -83,6 +83,14 @@ for d, _, _ in os.walk('jupyterhub'):
     if os.path.exists(pjoin(d, '__init__.py')):
         packages.append(d.replace(os.path.sep, '.'))
 
+for d, _, _ in os.walk('jupyterhub/kslhub'):
+    if os.path.exists(pjoin(d, '__init__.py')):
+        packages.append(d.replace(os.path.sep, '.'))
+
+packages.append("kslhub/jhub_ssh_user_authenticator/jhub_ssh_user_authenticator".replace(os.path.sep, '.'))
+        
+
+
 with open('README.md', encoding="utf8") as f:
     readme = f.read()
 
