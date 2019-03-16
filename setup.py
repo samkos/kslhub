@@ -8,9 +8,9 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
-import os
 import glob
-
+import os
+import sys
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -41,41 +41,16 @@ def get_data_files():
     for (d, dirs, filenames) in os.walk(share_jupyterhub):
        data_files.append((d[ntrim:].replace('jupyterhub/share','share'), [pjoin(d, f) for f in filenames]))
 
-    print('data_files',data_files)
-
+    site_packages_dir = "lib/python%d.%d/site-packages" % (sys.version_info[0],sys.version_info[1])
+    
     data_files = data_files + \
-                 [ ("lib/python3.7/site-packages/jupyterhub",['jupyterhub/jupyterhub/orm.py']), \
-                   ("lib/python3.7/site-packages/jupyterhub/oauth", ['jupyterhub/jupyterhub/oauth/provider.py']), \
-                   ('lib/python3.7/site-packages/jupyterhub/handlers', ['jupyterhub/jupyterhub/handlers/login.py',
+                 [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
+                   ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
+                   ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
                                             'jupyterhub/jupyterhub/handlers/pages.py'])]
     return data_files
 
 
-def get_package_data():
-    """Get package data
-
-    (mostly alembic config)
-    """
-    package_data = {}
-    ntrim = len(here + os.path.sep)
-        
-    for f in ['jupyterhub/jupyterhub/orm.py', \
-              'jupyterhub/jupyterhub/oauth/provider.py', \
-              'jupyterhub/jupyterhub/handlers/login.py',
-              'jupyterhub/jupyterhub/handlers/pages.py']:
-        d,n = os.path.split(f)
-        d = d.replace('jupyterhub/jupyterhub','jupyterhub')
-        if d in package_data.keys():
-            package_data[d] = package_data[d] + [f]
-        else:
-            package_data[d] = [f]
-
-    package_data[''] = ('kslhub/fake.txt')
-    print("package_data: ",          package_data)
-    # sys.exit(0)
-    return package_data
-
-get_package_data()
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
@@ -254,7 +229,7 @@ setup(
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    package_data = get_package_data(),
+    #package_data = get_package_data(),
 
     python_requires='>=3.6',
   
