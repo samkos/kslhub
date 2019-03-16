@@ -215,7 +215,7 @@ setup(
                       'toolz',
                       'cloudpickle ',
                       'distributed',
-                      # 'dockerspawner',
+                      #'dockerspawner',
                       'netifaces',
                       'ipyparallel',
                       'six>-1.11.0',
@@ -233,7 +233,7 @@ setup(
                       'SQLAlchemy>=1.1',
                       'requests',
                       'prometheus_client>=0.0.21',
-                      # 'jupyterhub==0.9.4',
+                      'jupyterhub==0.9.4',
                       'certipy>=0.1.2'],  # Optional
 
     # List additional groups of dependencies here (e.g. development

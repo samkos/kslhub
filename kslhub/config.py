@@ -48,17 +48,17 @@ which jupyterhub-singleuser
 
 c.JupyterHub.spawner_class = 'kslhub.wrapspawner.ProfilesSpawner'
 c.Spawner.http_timeout = 120
-c.BatchSpawnerBase.req_host = 'slurmd_1'
+c.BatchSpawnerBase.req_host = 'localhost'
 c.BatchSpawnerBase.req_runtime = '12:00:00'
 c.TorqueSpawner.state_exechost_exp = r'in-\1.mesabi.xyz.edu'
 c.ProfilesSpawner.profiles = [
-   ('Slurm - 1 Node - debug queue - 1 minutes', 'debug01', 'batchspawner.SlurmSpawner',
+   ('Slurm - 1 Node - debug queue - 1 minutes', 'debug01', 'kslhub.batchspawner.batchspawner.batchspawner.SlurmSpawner',
       dict(req_nprocs='1', req_partition='debug', req_runtime='0:01:00')),
-   ('Slurm - 1 Node - debug queue - 2 minutes', 'debug02', 'batchspawner.SlurmSpawner',
+   ('Slurm - 1 Node - debug queue - 2 minutes', 'debug02', 'kslhub.batchspawner.batchspawner.batchspawner.SlurmSpawner',
       dict(req_nprocs='1', req_partition='debug', req_runtime='0:02:00')),
-   ('Slurm - 1 Node - debug queue - 5 minutes', 'debug05', 'batchspawner.SlurmSpawner',
+   ('Slurm - 1 Node - debug queue - 5 minutes', 'debug05', 'kslhub.batchspawner.batchspawner.batchspawner.SlurmSpawner',
       dict(req_nprocs='1', req_partition='debug', req_runtime='0:05:00')),
-   ('Slurm - 1 Node - debug queue - 30 minutes', 'debug30', 'batchspawner.SlurmSpawner',
+   ('Slurm - 1 Node - debug queue - 30 minutes', 'debug30', 'kslhub.batchspawner.batchspawner.batchspawner.SlurmSpawner',
       dict(req_nprocs='1', req_partition='debug', req_runtime='0:30:00')),
    ( "Local server", 'local', 'jupyterhub.spawner.LocalProcessSpawner', {'ip':'0.0.0.0'} ),
    ]

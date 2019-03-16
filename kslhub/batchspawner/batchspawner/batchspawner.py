@@ -34,7 +34,7 @@ from traitlets import (
     Instance, Integer, Unicode, Float, Dict
 )
 
-from jhub_ssh_user_authenticator.authen import session_manager
+from kslhub.otp_authenticator.authen import session_manager
 from jupyterhub import dbutil, orm
 from jupyterhub.app import JupyterHub
 from jupyterhub.spawner import Spawner
