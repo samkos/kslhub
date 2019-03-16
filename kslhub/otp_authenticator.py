@@ -14,11 +14,7 @@ import sys, os
 import getpass
 
 
-from .authen import session_manager
-
-
-
-
+from .ssh_authenticator import session_manager
 
 def otp_validate(hostname,port,user,pw,otp):
 
@@ -112,7 +108,7 @@ class SshUserAuthenticator(Authenticator):
         """,
     )
 
-    otp_authenticator = Unicode("localhost", config=True,
+    otp_authenticator_host = Unicode("localhost", config=True,
         help="""hostname of where to validate OTP password if otp_required set to True
         """,
     )
@@ -131,7 +127,7 @@ class SshUserAuthenticator(Authenticator):
     @gen.coroutine
     def authenticate(self, handler, data):
         if handler.config.Authenticator.otp_required:
-            hostname = handler.config.Authenticator.otp_authenticator
+            hostname = handler.config.Authenticator.otp_authenticator_host
             port = handler.config.Authenticator.otp_authenticator_port
             login_ok = otp_validate(hostname,
                                     port,
@@ -141,7 +137,7 @@ class SshUserAuthenticator(Authenticator):
             if (not(login_ok)):
                 return None
                 
-        machine = handler.config.BatchSpawnerBase['req_host']
+        machine = handler.config.Authenticator.host
         if slurm_machine.open(machine,data['username'],data['password']):
             return data['username']
         return None

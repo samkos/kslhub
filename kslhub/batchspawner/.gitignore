@@ -1,7 +1,0 @@
-*.egg-info/
-*.log
-*.pyc
-__pycache__/
-.cache/
-.coverage
-*~
