@@ -22,7 +22,7 @@ with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 pjoin = os.path.join
 
-share_jupyterhub = pjoin(here, 'share', 'kslhub')
+share_jupyterhub = pjoin(here, 'jupyterhub','share', 'jupyterhub')
 static = pjoin(share_jupyterhub, 'static')
 
 is_repo = os.path.exists(pjoin(here, '.git'))
@@ -39,7 +39,7 @@ def get_data_files():
     ntrim = len(here + os.path.sep)
 
     for (d, dirs, filenames) in os.walk(share_jupyterhub):
-        data_files.append((d[ntrim:].replace('kslhub','jupyterhub'), [pjoin(d, f) for f in filenames]))
+        data_files.append((d[ntrim:].replace('jupyterhub/share','share'), [pjoin(d, f) for f in filenames]))
     return data_files
 
 
@@ -49,7 +49,10 @@ def get_package_data():
     (mostly alembic config)
     """
     package_data = {}
-    package_data['jupyterhub'] = ['alembic.ini', 'alembic/*', 'alembic/versions/*']
+    package_data['jupyterhub'] = ['/jupyterhub/orm.py', \
+                                  './jupyterhub/jupyterhub/oauth/provider.py', \
+                                  './jupyterhub/handlers/pages.py'
+    ]
     return package_data
 
 
@@ -231,9 +234,7 @@ setup(
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    package_data={  # Optional
-        'sample': ['package_data.dat'],
-    },
+    package_data= get_package_data(),
 
     python_requires='>=3.6',
   
