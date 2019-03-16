@@ -15,7 +15,7 @@ from .. import orm
 from ..utils import admin_only, url_path_join, maybe_future
 from .base import BaseHandler
 
-import scan_template
+import kslhub.scan_template
 
 import pprint
 import glob

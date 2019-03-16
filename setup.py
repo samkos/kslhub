@@ -39,7 +39,15 @@ def get_data_files():
     ntrim = len(here + os.path.sep)
 
     for (d, dirs, filenames) in os.walk(share_jupyterhub):
-        data_files.append((d[ntrim:].replace('jupyterhub/share','share'), [pjoin(d, f) for f in filenames]))
+       data_files.append((d[ntrim:].replace('jupyterhub/share','share'), [pjoin(d, f) for f in filenames]))
+
+    print('data_files',data_files)
+
+    data_files = data_files + \
+                 [ ("lib/python3.7/site-packages/jupyterhub",['jupyterhub/jupyterhub/orm.py']), \
+                   ("lib/python3.7/site-packages/jupyterhub/oauth", ['jupyterhub/jupyterhub/oauth/provider.py']), \
+                   ('lib/python3.7/site-packages/jupyterhub/handlers', ['jupyterhub/jupyterhub/handlers/login.py',
+                                            'jupyterhub/jupyterhub/handlers/pages.py'])]
     return data_files
 
 
@@ -49,13 +57,25 @@ def get_package_data():
     (mostly alembic config)
     """
     package_data = {}
-    package_data['jupyterhub'] = ['/jupyterhub/orm.py', \
-                                  './jupyterhub/jupyterhub/oauth/provider.py', \
-                                  './jupyterhub/handlers/pages.py'
-    ]
+    ntrim = len(here + os.path.sep)
+        
+    for f in ['jupyterhub/jupyterhub/orm.py', \
+              'jupyterhub/jupyterhub/oauth/provider.py', \
+              'jupyterhub/jupyterhub/handlers/login.py',
+              'jupyterhub/jupyterhub/handlers/pages.py']:
+        d,n = os.path.split(f)
+        d = d.replace('jupyterhub/jupyterhub','jupyterhub')
+        if d in package_data.keys():
+            package_data[d] = package_data[d] + [f]
+        else:
+            package_data[d] = [f]
+
+    package_data[''] = ('kslhub/fake.txt')
+    print("package_data: ",          package_data)
+    # sys.exit(0)
     return package_data
 
-
+get_package_data()
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
@@ -80,7 +100,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.0.1",  # Required
+    version="0.0.2",  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -195,7 +215,7 @@ setup(
                       'toolz',
                       'cloudpickle ',
                       'distributed',
-                      'dockerspawner',
+                      # 'dockerspawner',
                       'netifaces',
                       'ipyparallel',
                       'six>-1.11.0',
@@ -213,7 +233,7 @@ setup(
                       'SQLAlchemy>=1.1',
                       'requests',
                       'prometheus_client>=0.0.21',
-                      'jupyterhub==0.9.4',
+                      # 'jupyterhub==0.9.4',
                       'certipy>=0.1.2'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
@@ -224,17 +244,17 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={  # Optional
-        'dev': ['check-manifest'],
-        'test': ['coverage'],
-    },
+    # extras_require={  # Optional
+    #     'dev': ['check-manifest'],
+    #     'test': ['coverage'],
+    # },
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    package_data= get_package_data(),
+    package_data = get_package_data(),
 
     python_requires='>=3.6',
   
