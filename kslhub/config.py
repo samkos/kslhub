@@ -21,7 +21,7 @@ c.Authenticator.hub_greeting_message = "Welcome to SK Dev Hub!"
 c.Authenticator.hub_name = "SK"
 
 
-c.JupyterHub.authenticator_class = 'kslhub.jhub_ssh_user_authenticator.ssh_user_auth.jhub_ssh_user_authenticator.ssh_user_auth.SshUserAuthenticator'
+c.JupyterHub.authenticator_class = 'kslhub.jhub_ssh_user_authenticator.jhub_ssh_user_authenticator.ssh_user_auth.SshUserAuthenticator'
 c.JupyterHub.bind_url = 'http://%s:9000' % current_host
 c.JupyterHub.hub_bind_url = 'http://%s:9081' % current_host
 c.Spawner.cmd = ['jupyter-labhub']
