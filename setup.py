@@ -8,15 +8,51 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
-from os import path
+import os
 import glob
 
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
+
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
+
+
+pjoin = os.path.join
+
+share_jupyterhub = pjoin(here, 'share', 'kslhub')
+static = pjoin(share_jupyterhub, 'static')
+
+is_repo = os.path.exists(pjoin(here, '.git'))
+
+# ---------------------------------------------------------------------------
+# Build basic package data, etc.
+# ---------------------------------------------------------------------------
+
+
+def get_data_files():
+    """Get data files in share/jupyter"""
+
+    data_files = []
+    ntrim = len(here + os.path.sep)
+
+    for (d, dirs, filenames) in os.walk(share_jupyterhub):
+        data_files.append((d[ntrim:].replace('kslhub','jupyterhub'), [pjoin(d, f) for f in filenames]))
+    return data_files
+
+
+def get_package_data():
+    """Get package data
+
+    (mostly alembic config)
+    """
+    package_data = {}
+    package_data['jupyterhub'] = ['alembic.ini', 'alembic/*', 'alembic/versions/*']
+    return package_data
+
+
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
@@ -134,7 +170,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
+    packages=find_packages(exclude=['contrib', 'docs', 'tests','jupyterhub']),  # Required
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
@@ -174,6 +210,7 @@ setup(
                       'SQLAlchemy>=1.1',
                       'requests',
                       'prometheus_client>=0.0.21',
+                      'jupyterhub==0.9.4',
                       'certipy>=0.1.2'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
@@ -205,12 +242,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[('.', ['LICENSE.txt', 'AUTHORS']),
-#                ('scripts', ['decimate/scripts/end_job.sh']),
-#                ('tests', glob.glob('tests/*')),
- #               ('share/man/man1',glob.glob('docs/man/man1/*'))
-                # ('docs', glob.glob('docs/*'))
-    ],  # Optional
+    data_files= get_data_files(),  # Optional
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
