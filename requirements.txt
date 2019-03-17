@@ -8,7 +8,8 @@ bash_kernel
 yapf
 jupyter_contrib_nbextensions
 jupyter_nbextensions_configurator 
-ipywidgets dask
+ipywidgets
+dask
 toolz
 cloudpickle 
 distributed
