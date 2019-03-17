@@ -42,6 +42,9 @@ from jupyterhub.spawner import set_user_setuid
 from jupyterhub.utils import random_port
 import xml.etree.ElementTree as ET
 
+from kslhub import scan_template
+import glob
+import re
 
 # add on to compute secret and token to be passed to the spawning job
 # import os
@@ -209,20 +212,42 @@ class BatchSpawnerBase(Spawner):
     def submit_batch_script(self):
         subvars = self.get_req_subvars()
         cmd = self.batch_submit_cmd.format(**subvars)
+        self.log.info("\nsubvars:%s\n" % pprint.pformat(subvars))
+        
+        #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
+        template_directory = '%s/' % self.authenticator.job_template_dir
+        template_to_find =  "%s/%s -*.template" % (template_directory,subvars['input'])
+        self.log.info('template_to_find: /%s/' % template_to_find)
+
+        templates = glob.glob(template_to_find)
+
+        template = templates[0]
+
+        self.log.info("template found %s" % template)
+
+        script = "".join(open(template,"r").readlines())
+        
+        self.log.info('template content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+
+        for k in subvars.keys():
+            v = subvars[k]
+            script = re.sub(r"__%s;.+__" % k , v, script)
+            script = re.sub(r"__%s__" % k , v, script)
+            
         subvars['cmd'] = self.cmd_formatted_for_batch()
         if hasattr(self, 'user_options'):
             subvars['user_options'] = self.user_options
-        script = self.batch_script.format(**subvars)
-        self.log.debug('Spawner submitting job using ' + cmd)
-        self.log.debug('Spawner submitted script:\n' + script)
 
-        
-        #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
-        
+        #script = self.batch_script.format(**subvars)
+        #self.log.debug('Spawner submitting job using ' + cmd)
+        #self.log.debug('Spawner submitted script:\n' + script)
+
+
+            
         f = open("%s/jobs/%s_last_script" %  (kslhub_root,self.user.name),"w")
         f.write(script)
         f.close()
-        # self.log.info("\nsubvars:%s\n" % pprint.pformat(subvars['keepvars']))
+
 
 
         if script.find("#SBATCH -v")>-1:
@@ -281,6 +306,9 @@ class BatchSpawnerBase(Spawner):
         f.write(script)
         f.close()
 
+
+        self.log.info('Job content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+        
         # self.log.info('Spawner modified script:\n' + script)
         #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
         print("[AUTHENT] in submit_batch_script user: %s or |||%s|| ot type %s " %\
