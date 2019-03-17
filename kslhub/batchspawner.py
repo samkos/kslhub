@@ -214,6 +214,12 @@ class BatchSpawnerBase(Spawner):
         cmd = self.batch_submit_cmd.format(**subvars)
         self.log.info("\nsubvars:%s\n" % pprint.pformat(subvars))
         
+        for v in subvars['keepvars'].split(","):
+            if os.getenv(v):
+                subvars[v] = os.getenv(v)
+
+        self.log.info("\nsubvars after keepvar :%s\n" % pprint.pformat(subvars))
+        
         #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
         template_directory = '%s/' % self.authenticator.job_template_dir
         template_to_find =  "%s/%s -*.template" % (template_directory,subvars['input'])
@@ -229,11 +235,47 @@ class BatchSpawnerBase(Spawner):
         
         self.log.info('template content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
 
+        # replace all the __tag;...;..;;...__ and __tag__ pattern with the value
+        # chosen in the GUI
+        
         for k in subvars.keys():
             v = subvars[k]
             script = re.sub(r"__%s;.+__" % k , v, script)
             script = re.sub(r"__%s__" % k , v, script)
             
+        self.log.info('content after __tag__ replacememnt: \n' \
+                      + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+        
+        self.log.info('user_options: %s' % self.user_options)
+
+
+        # initialize the keepvar environment variable
+
+        # find the right spot in the script (just before the first command
+
+        script_env_set = ""
+        env_done = False
+        for l in script.split("\n"):
+            if len(l)==0:
+                script_env_set = script_env_set + l + "\n"
+            elif l[0]=="#" or len(l.strip())==0 or env_done:
+                script_env_set = script_env_set + l + "\n"
+            else:
+                vars = "#" * 80 + "\n# Environment variables to be forwarded....\n"
+                for v in subvars['keepvars'].split(","):
+                    if os.getenv(v):
+                        vars = vars + "export %s=%s\n " % (v,os.getenv(v))
+                vars = vars + "#" * 80 + "\n"
+                script_env_set = script_env_set + vars
+                env_done = True
+                
+
+        script = script_env_set
+        self.log.info('content after env addition: \n' \
+                      + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+
+
+        
         subvars['cmd'] = self.cmd_formatted_for_batch()
         if hasattr(self, 'user_options'):
             subvars['user_options'] = self.user_options
@@ -243,6 +285,8 @@ class BatchSpawnerBase(Spawner):
         #self.log.debug('Spawner submitted script:\n' + script)
 
 
+        # set all 
+        
             
         f = open("%s/jobs/%s_last_script" %  (kslhub_root,self.user.name),"w")
         f.write(script)
