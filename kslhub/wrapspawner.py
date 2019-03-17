@@ -210,7 +210,7 @@ class ProfilesSpawner(WrapSpawner):
         # Select matching profile, or do nothing (leaving previous or default config in place)
         for p in self.profiles:
             if p[1] == profile:
-                self.child_class = batchspawner.SlurmSpawner
+                self.child_class = kslhub.batchspawner.SlurmSpawner
                 self.child_config = p[3]
                 self.child_config['input'] = self.child_input                
                 break

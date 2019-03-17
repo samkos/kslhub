@@ -50,7 +50,7 @@ import xml.etree.ElementTree as ET
 #     api_token=os.environ['JUPYTERHUB_API_TOKEN'],
 #     cookie_cache_max_age=60,
 # )
-kslhub_root = os.getenv('KSLHUB_ROOT')
+kslhub_root = "."  # os.getenv('KSLHUB_ROOT')
 
 slurm_machine = session_manager()
 

@@ -30,6 +30,35 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 
 
 
+
+* develop/debug
+
+
+
+
+
+# pip install jupyterhub==0.9.4
+pip install .
+cd /home/kortass/KSLHUB_TEST/env/lib/python3.6/site-packages
+\rm -rf kslhub
+ln -s /home/kortass/KSLHUB/kslhub .
+
+
+pip uninstall jupyterhub
+
+cd ~/KSLHUB
+MY_DIR=`pwd`
+export PYTHONPATH=$MY_DIR/jupyterhub:$MY_DIR:$PYTHONPATH
+cd /home/kortass/KSLHUB/jupyterhub/jupyterhub
+ln -s ../jupyterhub .
+cd /home/kortass/KSLHUB_TEST/env/share
+\rm -rf jupyterhub
+ln -s /home/kortass/KSLHUB/jupyterhub/share/jupyterhub  .
+export PYTHONPATH=$MY_DIR:$PYTHONPATH
+cd ~/KSLHUB
+kslhub --start -f /home/kortass/KSLHUB/kslhub/config.py
+
+
 * finish installation of jupyterhub
  
 # installing NERSC slurm magic  kernel
@@ -79,3 +108,7 @@ kslhub -f kslhub/config.py
 pip install sphinx sphinx_rtd_theme
 cd docs
 make html
+
+
+
+*

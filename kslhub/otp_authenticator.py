@@ -74,9 +74,7 @@ def otp_validate(hostname,port,user,pw,otp):
 
     return authenticated
 
-
 slurm_machine = session_manager()
-
     
 class SshUserLoginHandler(BaseHandler):
 
@@ -124,8 +122,17 @@ class SshUserAuthenticator(Authenticator):
         """
     ).tag(config=True)
     
+    job_template_dir = Unicode("./job_templates", config=True,
+        help="""
+        job templates directory
+        """
+    ).tag(config=True)
+
+
+    
     @gen.coroutine
     def authenticate(self, handler, data):
+
         if handler.config.Authenticator.otp_required:
             hostname = handler.config.Authenticator.otp_authenticator_host
             port = handler.config.Authenticator.otp_authenticator_port
@@ -138,6 +145,7 @@ class SshUserAuthenticator(Authenticator):
                 return None
                 
         machine = handler.config.Authenticator.host
+        self.log.info("hello")
         if slurm_machine.open(machine,data['username'],data['password']):
             return data['username']
         return None
