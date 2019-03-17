@@ -29,14 +29,22 @@ class kslhub_frontend():
     self.parser.add_argument('--start', action="store_true", default=False,
                              help="start the hub")
 
+    self.parser.add_argument('--generate-config', action="store_true", default=False,
+                             help="generate a default config file")
+
     self.parser.add_argument("-f", "--config", type=str, help='hub configuration file', default=False)
     self.parser.add_argument("--port", type=int, help='port of the hub web interface (9000 per default)',
                              default=9000)
     self.parser.add_argument("--ip", type=int, help='address of the hub web interface (0.0.0.0 per default)',
                              default=9000)
-    self.parser.add_argument("--hub-name", type=str, help='hub-name', default='KSLHUB')
-    self.parser.add_argument("--job-template-dir", type=str, help='directory where template jobs live',
+
+    self.parser.add_argument("--hub-name", type=str, help='Name of the hub', default='KSLHUB')
+
+    self.parser.add_argument("--greeting-message", type=str, help='Message to be shwn on the welcome page of the Hub', default='KSLHUB')
+
+    self.parser.add_argument("--job-templates-dir", type=str, help='directory where template jobs live',
                              default='job_templates')
+
     self.args = self.parser.parse_args()
 
 
@@ -78,6 +86,11 @@ def start():
       cmd = "jupyterhub %s" % args
       print("should start the hub with command : /%s/" % cmd)
       os.system(cmd)
+
+    else:
+       print("\nChoose at least one the following options:\n\t--init to complete the installation of kslhub\n\t--start ro start the hub"+\
+             "\n\t--generate-config to generate an example of configuration file\n\t--help to have the following message\n\n")
+       K.parser.parse_args(['-h'])
 
   
 if __name__ == "__main__":

@@ -18,8 +18,8 @@ c.Spawner.debug  = True
 
 c.Authenticator.otp_required = False
 c.Authenticator.host = 'localhost'
-c.Authenticator.hub_greeting_message = "Welcome to SK Dev Hub!"
-c.Authenticator.hub_name = "SK"
+c.Authenticator.hub_greeting_message = "Welcome to KSL Hub!"
+c.Authenticator.hub_name = "Shaheen"
 
 
 c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.SshUserAuthenticator'

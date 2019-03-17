@@ -7,8 +7,8 @@ ml python/3.7.2
 * test locally
 
 #ml python/miniconda3-4.5.12
-#\rm -rf env
-#conda create -y -p //home/kortass/KSLHUB_TEST/env 'python>=3.6 ' pip
+#\rm -rf /home/kortass/KSLHUB_TEST/env
+#conda create -y -p /home/kortass/KSLHUB_TEST/env 'python==3.6 ' pip
 . /home/kortass/APPS/miniconda3-4.5.12/etc/profile.d/conda.sh
 conda activate //home/kortass/KSLHUB_TEST/env
 # to install and test locally
@@ -30,8 +30,52 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 
 
 
+* finish installation of jupyterhub
+ 
+# installing NERSC slurm magic  kernel
+mkdir -p $SW_BLDDIR/BUILD
+cd $SW_BLDDIR/BUILD
+git clone https://github.com/NERSC/slurm-magic.git
+cd slurm-magic
+python setup.py install
 
-* run jupyterhub
-jupyterhub
+cd $SW_BLDDIR/BUILD
+jupyter-kernelspec install slurm-magic --sys-prefix
 
-jupyterhub -f kslhub/config.py
+# configuring the extension 
+jupyter contrib nbextension install  --sys-prefix
+jupyter nbextensions_configurator enable --sys-prefix
+jupyter nbextension enable codefolding/main
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
+#jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+# configuring the working directory
+
+mkdir -p /scratch/tmp/kslhub/runtime/jupyter /scratch/tmp/kslhub/jobs /scratch/tmp/kslhub/logs
+cd $SW_BLDDIR
+chmod 3777 runtime jobs logs
+
+ln -s /scratch/tmp/kslhub/runtime .
+ln -s /scratch/tmp/kslhub/jobs .
+ln -s /scratch/tmp/kslhub/logs .
+
+
+chmod 3777 $SW_BLDDIR/jobs
+chmod 3777 $SW_BLDDIR/runtime/jupyter
+
+  drwxrwxrwt     5 root        root          2822144 Mar 14 15:39 tmp
+           ^ sticky bit
+
+
+
+
+
+* run kslhub
+kslhub --init
+
+kslhub -f kslhub/config.py
+
+* documentation
+pip install sphinx sphinx_rtd_theme
+cd docs
+make html
