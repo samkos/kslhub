@@ -82,6 +82,10 @@ def start():
       
     elif K.args.start:
       if K.args.config:
+        if not(os.path.exists(K.args.config)):
+          print("\nERROR: configuration file %s does not exist!\n" % K.args.config)
+          sys.exit(-1)
+
         args = args + "-f %s" % K.args.config
       cmd = "jupyterhub %s" % args
       print("should start the hub with command : /%s/" % cmd)
