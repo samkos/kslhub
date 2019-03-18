@@ -267,6 +267,21 @@ class BatchSpawnerBase(Spawner):
                         vars = vars + "export %s=%s\n " % (v,os.getenv(v))
                 vars = vars + "#" * 80 + "\n"
                 script_env_set = script_env_set + vars
+
+                # adding token and secret credential
+
+                script_env_set = script_env_set + """
+                export JUPYTERHUB_BASE_URL=/
+                export JUPYTERHUB_CLIENT_ID=jupyterhub-user-__USER__
+                export JUPYTERHUB_API_TOKEN=__TOKEN__
+                export JUPYTERHUB_API_URL=http://__HOST__:9081/hub/api
+                export JUPYTERHUB_USER=__USER__
+                export JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback
+                export JUPYTERHUB_HOST=__HOST__
+                export JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/
+                export CONFIGPROXY_AUTH_TOKEN=__SECRET__
+                """ + "#" * 80 + "\n"
+                
                 env_done = True
                 
 
@@ -275,6 +290,47 @@ class BatchSpawnerBase(Spawner):
                       + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
 
 
+        
+        # computing the token related to user
+        
+        hub = JupyterHub(parent=self)
+        hub.load_config_file(hub.config_file)
+        hub.init_db()
+        def init_users():
+            loop = asyncio.new_event_loop()
+            loop.run_until_complete(hub.init_users())
+        ThreadPoolExecutor(1).submit(init_users).result()
+        user = orm.User.find(hub.db, self.user.name)
+        self.log.info("user : %s" % pprint.pformat(self.user))
+        if user is None:
+            self.log.info("No such user: %s" % self.user.name, file=sys.stderr)
+            self.exit(1)
+        token = user.new_api_token(note="command-line generated")
+        print(token)
+        
+        self.log.info("token = !!!%s!!! " % token)
+
+        script = script.replace("__TOKEN__",token)
+
+
+        client_id = 'jupyterhub-user-%s' % quote(self.user.name)
+        oauth_client = (
+            hub.db
+            .query(orm.OAuthClient)
+            .filter_by(identifier=client_id)
+            .first()
+        )
+        self.log.info("secret = !!!%s!!! " % oauth_client.secret)
+
+        script = script.replace("__SECRET__", oauth_client.secret)
+        script = script.replace("__USER__", self.user.name)
+        script = script.replace("__HOST__", "10.68.58.171")
+        
+
+        self.log.info('content after token replacement: \n' \
+                      + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+
+        
         
         subvars['cmd'] = self.cmd_formatted_for_batch()
         if hasattr(self, 'user_options'):
@@ -312,39 +368,6 @@ class BatchSpawnerBase(Spawner):
 
         os.system("env > %s/jobs/%s_last_script_env" %  (kslhub_root,self.user.name))
 
-        # computing the token related to user
-        
-        hub = JupyterHub(parent=self)
-        hub.load_config_file(hub.config_file)
-        hub.init_db()
-        def init_users():
-            loop = asyncio.new_event_loop()
-            loop.run_until_complete(hub.init_users())
-        ThreadPoolExecutor(1).submit(init_users).result()
-        user = orm.User.find(hub.db, self.user.name)
-        print("user : %s" % pprint.pformat(self.user))
-        if user is None:
-            print("No such user: %s" % self.user.name, file=sys.stderr)
-            self.exit(1)
-        token = user.new_api_token(note="command-line generated")
-        print(token)
-        
-        self.log.info("token = !!!%s!!! " % token)
-
-        script = script.replace("__TOKEN__",token)
-
-
-        client_id = 'jupyterhub-user-%s' % quote(self.user.name)
-        oauth_client = (
-            hub.db
-            .query(orm.OAuthClient)
-            .filter_by(identifier=client_id)
-            .first()
-        )
-        self.log.info("secret = !!!%s!!! " % oauth_client.secret)
-
-        script = script.replace("__SECRET__", oauth_client.secret)
-        script = script.replace("__USER__", self.user.name)
         
         f = open("%s/jobs/%s_last_script_modified" % (kslhub_root,self.user.name),"w")
         f.write(script)

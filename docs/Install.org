@@ -87,7 +87,7 @@ ln -s /home/kortass/KSLHUB/kslhub/config.py kslhub
 export PYTHONPATH=/home/kortass/KSLHUB/jupytrhub:$PYTHONPATH
 
 cd ~/TMP
-kslhub --start -f /home/kortass/KSLHUB/kslhub/config.py
+kslhub 
 
 
 
