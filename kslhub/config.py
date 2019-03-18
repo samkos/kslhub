@@ -1,7 +1,6 @@
-import socket
 import os
-
-kslhub_root = os.getenv('KSLHUB_ROOT')
+import socket
+import sys
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
@@ -25,7 +24,7 @@ c.Authenticator.job_template_dir = "./job_templates"
 
 
 c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.SshUserAuthenticator'
-c.JupyterHub.template_paths = ['/home/kortass/KSLHUB/kslhub/templates']
+c.JupyterHub.template_paths = [ "%s/share/kslhub/templates" % sys.base_prefix ]
 
 
 

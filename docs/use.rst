@@ -25,10 +25,10 @@ Starting the hub
 
 The hub can be started with the following command::
 
-    $ kslhub --start
+    $ kslhub 
 
-Generating a configuration file
-```````````````````````````````
+*KslHub* configuration file
+```````````````````````````
 
 .. image:: images/default_welcoming_page.png
 
@@ -41,16 +41,19 @@ in the following directory::
      <current_directory>/job_templates
 
 
-To change this default configuration, one can add the options
-*--job-templates-dir*, *--port*, *--ip*, *--greeting-message* or
-*--hub-name* or edit these parameters via a configuration file to be
-invoked as::
+To change this default configuration, one can aedit these parameters
+via a configuration file to be invoked as::
 
-      $ kslhub --start --config <my_configuration_file>
+   
+      $ kslhub --config <my_configuration_file>
 
 A default configuration file is generated with the following command::
 
        $ kslhub --generate-config
+
+A default set of job template files is generated with the following command::
+
+       $ kslhub --generate-job-templates
 
        
 

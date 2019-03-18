@@ -17,6 +17,7 @@ pip install -e .
 pip install .
 
 # make a pakage and push it
+cd //home/kortass/KSLHUB
 \rm -rf dist/*
 python setup.py sdist bdist_wheel
 #twine upload  -r test dist/*
@@ -24,8 +25,28 @@ python setup.py sdist bdist_wheel
 
 
 # to install from a package made
+cd /home/kortass/KSLHUB_TEST
+\rm -rf /home/kortass/KSLHUB_TEST/env_test
+ml python/miniconda3-4.5.12
+conda create -y -p /home/kortass/KSLHUB_TEST/env_test 'python>=3 ' pip
+. /home/kortass/APPS/miniconda3-4.5.12/etc/profile.d/conda.sh
+conda activate /home/kortass/KSLHUB_TEST/env_test
 pip install /home/kortass/KSLHUB/dist/ksl*tar.gz
+kslhub -h
+kslhub --init
+kslhub --generate-job-templates
+kslhub
+
+
+
 pip uninstall kslhub
+
+
+
+
+
+
+
 pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0.0.10
 
 
@@ -54,14 +75,13 @@ cd /home/kortass/KSLHUB_TEST/env/share
 \rm -rf kslhub
 mkdir kslhub 
 ln -s /home/kortass/KSLHUB/kslhub/templates kslhub
-
-
-
+ln -s /home/kortass/KSLHUB/kslhub/config.py kslhub
 
 export PYTHONPATH=/home/kortass/KSLHUB/jupytrhub:$PYTHONPATH
 
 cd ~/TMP
 kslhub --start -f /home/kortass/KSLHUB/kslhub/config.py
+
 
 
 
