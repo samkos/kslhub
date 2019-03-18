@@ -10,8 +10,8 @@ of python higher or equal than 3.6.
 
 At this stage, the integration with jupyterhub is still poor as we
 need to patch some of the source files of jupyterhub sources. That's
-why the installation of jupyterhub vn 0.9.4 is enforced as the patces
-wer only validated with this specific version only.
+why the installation of jupyterhub v. 0.9.4 is enforced as the patches
+were only validated with this specific version.
 
 We are working to find a better solution for the future releases.
 
