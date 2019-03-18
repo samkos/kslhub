@@ -38,13 +38,14 @@ def get_data_files():
     data_files = []
     ntrim = len(here + os.path.sep)
 
-    for (d, dirs, filenames) in os.walk(share_jupyterhub):
-       data_files.append((d[ntrim:].replace('jupyterhub/share','share'), [pjoin(d, f) for f in filenames]))
+    for (d, dirs, filenames) in os.walk(pjoin('kslhub','templates')):
+       data_files.append(('share/kslhub/templates/', [pjoin(d, f) for f in filenames]))
 
     site_packages_dir = "lib/python%d.%d/site-packages" % (sys.version_info[0],sys.version_info[1])
     
     data_files = data_files + \
-                 [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
+                 [ ("share/kslhub", ["kslhub/config.py"]), \
+                   ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
                    ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
                    ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
                                             'jupyterhub/jupyterhub/handlers/pages.py'])]
