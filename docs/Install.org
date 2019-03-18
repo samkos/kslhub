@@ -40,8 +40,17 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 # pip install jupyterhub==0.9.4
 pip install .
 cd /home/kortass/KSLHUB_TEST/env/lib/python3.6/site-packages
-\rm -rf kslhub
-ln -s /home/kortass/KSLHUB/kslhub .
+\rm -rf kslhub jupyterhub
+ln -s /home/kortass/KSLHUB/kslhub /home/kortass/KSLHUB/jupyterhub/jupyterhub .
+cd /home/kortass/KSLHUB/jupyterhub/jupyterhub
+ln -s ../jupyterhub .
+
+cd /home/kortass/KSLHUB_TEST/env/share
+\rm -rf kslhub jupyterhub
+mkdir kslhub 
+ln -s /home/kortass/KSLHUB/kslhub/templates kslhub
+ln -s  /home/kortass/KSLHUB/jupyterhub/share/jupyterhub .
+
 
 
 cd ~/TMP
