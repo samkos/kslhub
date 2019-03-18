@@ -25,7 +25,7 @@ c.Authenticator.job_template_dir = "./job_templates"
 
 
 c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.SshUserAuthenticator'
-
+c.JupyterHub.template_paths = ['/home/kortass/KSLHUB/kslhub/templates']
 
 
 

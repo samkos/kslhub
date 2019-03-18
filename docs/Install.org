@@ -44,6 +44,10 @@ cd /home/kortass/KSLHUB_TEST/env/lib/python3.6/site-packages
 ln -s /home/kortass/KSLHUB/kslhub .
 
 
+cd ~/TMP
+kslhub --start -f /home/kortass/KSLHUB/kslhub/config.py
+
+
 pip uninstall jupyterhub
 
 cd ~/KSLHUB
@@ -102,7 +106,7 @@ chmod 3777 $SW_BLDDIR/runtime/jupyter
 * run kslhub
 kslhub --init
 
-kslhub -f kslhub/config.py
+kslhub --start -f /home/kortass/KSLHUBkslhub/config.py
 
 * documentation
 pip install sphinx sphinx_rtd_theme

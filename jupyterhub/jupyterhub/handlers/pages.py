@@ -15,7 +15,7 @@ from .. import orm
 from ..utils import admin_only, url_path_join, maybe_future
 from .base import BaseHandler
 
-import kslhub.scan_template
+from kslhub import scan_template
 
 import pprint
 import glob
@@ -85,10 +85,10 @@ class SpawnHandler(BaseHandler):
         user = for_user or self.get_current_user()
         spawner_options_form = await user.spawner.get_options_form()
 
-        kslhub_root = os.getenv('KSLHUB_ROOT')
+        kslhub_root = '.'
         
-        template_directory = '%s/job_templates/%s/' % (kslhub_root,self.authenticator.hub_name.lower())
-        #template_directory = '%s/' % self.authenticator.job_template_dir
+        #template_directory = '%s/job_templates/%s/' % (kslhub_root,self.authenticator.hub_name.lower())
+        template_directory = '%s/' % self.authenticator.job_template_dir
         template_options = ['<label for="profile">Select a job profile:</label>\n',\
                             '<select class="form-control" name="profile" id="spawn_select" required autofocus>\n']
         templates = glob.glob( "%s/*.template" % template_directory)
