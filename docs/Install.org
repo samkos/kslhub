@@ -84,11 +84,11 @@ mkdir kslhub
 ln -s /home/kortass/KSLHUB/kslhub/templates kslhub
 ln -s /home/kortass/KSLHUB/kslhub/config.py kslhub
 
-export PYTHONPATH=/home/kortass/KSLHUB/jupytrhub:$PYTHONPATH
+export PYTHONPATH=/home/kortass/KSLHUB/jupyterhub:$PYTHONPATH
 
 cd ~/TMP
 kslhub 
-
+kslhub -f shaheen_config.py
 
 
 

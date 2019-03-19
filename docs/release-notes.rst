@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+0.0.5 (Mar 19, 2019)
+-------------------
+
+    * bug fixes related to the spawning of the jupyterlab environment
+    * released for test only.
+
 0.0.4 (Mar 18, 2019)
 -------------------
 

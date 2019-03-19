@@ -134,13 +134,15 @@ class SshUserAuthenticator(Authenticator):
     def authenticate(self, handler, data):
 
         if handler.config.Authenticator.otp_required:
-            hostname = handler.config.Authenticator.otp_authenticator_host
-            port = handler.config.Authenticator.otp_authenticator_port
+            hostname = handler.config.Authenticator.host
+            port = handler.config.Authenticator.port
             login_ok = otp_validate(hostname,
                                     port,
                                     data['username'],
                                     data['password'],
                                     data['otp'])
+            self.log.info("attempt of authentication of %s@%s:%s with otp -> result = %s" % \
+                     (data['username'],hostname,port,login_ok))
             if (not(login_ok)):
                 return None
                 

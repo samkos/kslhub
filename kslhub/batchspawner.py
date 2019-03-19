@@ -90,6 +90,7 @@ def run_command(cmd, input=None, env=None, user=None):
         
     stdin, stdout, stderr = connection.exec_command(cmd)
     if not(input==None):
+        print("sending input:/%s/" % input)
         stdin.write("".join(input))
         stdin.channel.shutdown_write()
     else:
@@ -277,9 +278,10 @@ class BatchSpawnerBase(Spawner):
                 export JUPYTERHUB_API_URL=http://__HOST__:9081/hub/api
                 export JUPYTERHUB_USER=__USER__
                 export JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback
-                export JUPYTERHUB_HOST=__HOST__
+                export JUPYTERHUB_HOST=
                 export JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/
                 export CONFIGPROXY_AUTH_TOKEN=__SECRET__
+                export PYTHONPATH=__PYTHONPATH__
                 """ + "#" * 80 + "\n"
                 
                 env_done = True
@@ -325,6 +327,8 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__SECRET__", oauth_client.secret)
         script = script.replace("__USER__", self.user.name)
         script = script.replace("__HOST__", "10.68.58.171")
+        if os.getenv("PYTHONPATH"):
+            script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH"))
         
 
         self.log.info('content after token replacement: \n' \
@@ -333,6 +337,9 @@ class BatchSpawnerBase(Spawner):
         
         
         subvars['cmd'] = self.cmd_formatted_for_batch()
+        self.log.info("cmd formatted:%s" % subvars['cmd'])
+        script = script.replace("__CONNECT__", subvars['cmd'])
+        
         if hasattr(self, 'user_options'):
             subvars['user_options'] = self.user_options
 
@@ -385,7 +392,10 @@ class BatchSpawnerBase(Spawner):
         user_str = ("%s" % user)
         if user_str.find('<User(')>-1:
             user = user_str[6:].split(' ')[0]
-        
+
+
+
+            
         out = yield run_command(cmd, input=script, env=self.get_env(), user=user)
         try:
             self.log.info('Job submitted. cmd: ' + cmd + ' output: ' + out)
@@ -596,6 +606,9 @@ class BatchSpawnerRegexStates(BatchSpawnerBase):
 
     def state_isrunning(self):
         assert self.state_running_re
+        self.log.info("is_running job_status=/%s/ is_running =/%s/" % \
+                      (self.job_status,re.search(self.state_running_re, self.job_status)))
+
         if self.job_status and re.search(self.state_running_re, self.job_status):
             return True
         else: return False
@@ -603,11 +616,13 @@ class BatchSpawnerRegexStates(BatchSpawnerBase):
     def state_gethost(self):
         assert self.state_exechost_re
         match = re.search(self.state_exechost_re, self.job_status)
+        self.log.info("is_host job_status=/%s/ host =/%s/" % (self.job_status,match.groups()[0]))
+
         if not match:
             self.log.error("Spawner unable to match host addr in job status: " + self.job_status)
             return
         if not self.state_exechost_exp:
-            return match.groups()[0]
+            return match.groups()[0].replace('sam-1','localhost')
         else:
             return match.expand(self.state_exechost_exp)
 
@@ -680,6 +695,7 @@ which jupyterhub-singleuser
     state_running_re = Unicode(r'^(?:RUNNING|COMPLETING)', config=True)
     state_exechost_re = Unicode(r'\s+((?:[\w_-]+\.?)+)$', config=True)
 
+    
     def parse_job_id(self, output):
         # make sure jobid is really a number
         try:

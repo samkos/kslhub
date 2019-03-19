@@ -47,7 +47,7 @@ def get_data_files():
     site_packages_dir = "lib/python%d.%d/site-packages" % (sys.version_info[0],sys.version_info[1])
     
     data_files = data_files + \
-                 [ ("share/kslhub", ["kslhub/config.py"]), \
+                 [ ("share/kslhub", ["kslhub/config.py", "kslhub/config_docker_slurm.py"]), \
                    ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
                    ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
                    ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
@@ -79,7 +79,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.0.4",  # Required
+    version="0.0.5",  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:

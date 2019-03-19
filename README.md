@@ -49,6 +49,6 @@ COPYRIGHT
 SEE ALSO
 
        kslhub official documentation pages:
-                <http://http://kslhub.readthedocs.io>
+                <http://kslhub.readthedocs.io>
 		
        KAUST Supercomputing Laboratory: <http://hpc.kaust.edu.sa/>
