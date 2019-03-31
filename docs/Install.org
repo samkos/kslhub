@@ -92,6 +92,41 @@ kslhub -f shaheen_config.py
 
 
 
+* develop/debug on shaheen
+CONDA_DIR=/project/k01/kortass/CLE6/KSLHUB_TEST/env
+ml miniconda/3.7
+source activate  $CONDA_DIR
+
+\rm -rf $CONDA_DIR/lib/python3.*/site-packages/jupyterhub*
+\rm -rf $CONDA_DIR/lib/python3.*/site-packages/kslhub*
+\rm -rf $CONDA_DIR/share/*hub
+
+cd /project/k01/kortass/CLE6/KSLHUB_TEST/KSLHUB_GITHUB
+pip install .
+
+cd $CONDA_DIR/lib/python3.*/site-packages
+# mv jupyterhub jupyterhub-orig
+# ln -s /home/kortass/KSLHUB/kslhub /home/kortass/KSLHUB/jupyterhub/jupyterhub .
+
+\rm -rf $CONDA_DIR/lib/python3.*/site-packages/kslhub*
+ln -s /home/kortass/KSLHUB/kslhub .
+
+cd /home/kortass/KSLHUB/jupyterhub/jupyterhub
+ln -s ../jupyterhub .
+
+cd $CONDA_DIR/share
+\rm -rf kslhub
+mkdir kslhub 
+ln -s /home/kortass/KSLHUB/kslhub/templates kslhub
+ln -s /home/kortass/KSLHUB/kslhub/config.py kslhub
+
+export PYTHONPATH=/home/kortass/KSLHUB/jupyterhub:$PYTHONPATH
+
+cd ~/TMP
+kslhub 
+kslhub -f shaheen_config.py
+
+
 * finish installation of jupyterhub
  
 # installing NERSC slurm magic  kernel

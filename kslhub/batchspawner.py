@@ -405,7 +405,7 @@ class BatchSpawnerBase(Spawner):
             f.close()
             
         except:
-            self.log.error('Job submission failed with exit code ' + out)
+            self.log.error('Job submission failed with exit code %s ' % out)
             self.job_id = ''
         return self.job_id
 

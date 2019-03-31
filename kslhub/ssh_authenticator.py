@@ -33,7 +33,7 @@ class session_manager(object):
                 if "port" in o.keys():
                     self.actual_default_port = int(o["port"])
             except:
-                print('ZZZZ pb de lecture du port ',o)
+                print('ZZZZ problem to read port ',o)
     
     
             if SSH_DEBUG:
@@ -45,8 +45,8 @@ class session_manager(object):
             # self.actual_ssh = o['identityfile']
             
         except Exception as e:
-            print("authent.py : pb de lecture de config ssh pour la machine %s" %\
-                  self.machine, "fichier lu : %s" % \
+            print("ssh_authenticator.py : problem to read ssh config for machine %s" %\
+                  self.machine, " read from : %s" % \
                   os.path.abspath(HOME)+'/.ssh/config')
             try:
                 print("value read from .ssh/config : ",o)
@@ -68,7 +68,7 @@ class session_manager(object):
         user_connection_id = "%s_%s" % (self.machine,login)
         
         if SSH_DEBUG:
-            print("[AUTHENT] ouverture d'une nouvelle session pour %s/%s" % \
+            print("[AUTHENT] opens new session for  %s/%s" % \
                   (self.machine,login))
 
         # initialisation du client
@@ -94,7 +94,7 @@ class session_manager(object):
 
 
         if SSH_DEBUG:
-            print("[AUTHENT] [%s] ouverture d'une nouvelle connection user %s : " % \
+            print("[AUTHENT] [%s] opens new connection for user %s : " % \
                 (self.machine,login) ,connection)
         # test de la connection
         stdin, stdout, stderr = connection.exec_command("cd; pwd")
@@ -141,7 +141,7 @@ class session_manager(object):
         user_connection_id = "%s_%s" % (self.machine,login)
         if user_connection_id in self.connections.keys():
             if SSH_DEBUG:
-                print("[AUTHENT] cloture de la session ssh pour ",user_connection_id)
+                print("[AUTHENT] closing ssh session for ",user_connection_id)
             # closing session
             try:
                 if self.machine == "vishnu":
@@ -158,7 +158,7 @@ class session_manager(object):
                  del self.passwords[user_connection_id]
             return True
         else:
-            print("[AUTHENT] demande de cloture de la session INEXISTANTE  pour ",user_connection_id)
+            print("[AUTHENT] asking to close an unexisting  session for  ",user_connection_id)
             return False
         
 
