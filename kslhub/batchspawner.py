@@ -275,7 +275,7 @@ class BatchSpawnerBase(Spawner):
                 export JUPYTERHUB_BASE_URL=/
                 export JUPYTERHUB_CLIENT_ID=jupyterhub-user-__USER__
                 export JUPYTERHUB_API_TOKEN=__TOKEN__
-                export JUPYTERHUB_API_URL=http://__HOST__:9081/hub/api
+                export JUPYTERHUB_API_URL=http://__HOST__:9991/hub/api
                 export JUPYTERHUB_USER=__USER__
                 export JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback
                 export JUPYTERHUB_HOST=
@@ -326,7 +326,8 @@ class BatchSpawnerBase(Spawner):
 
         script = script.replace("__SECRET__", oauth_client.secret)
         script = script.replace("__USER__", self.user.name)
-        script = script.replace("__HOST__", "10.68.58.171")
+        # SKKKKKKKK to be fixed!!!
+        script = script.replace("__HOST__", "10.129.35.32")
         if os.getenv("PYTHONPATH"):
             script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH"))
         
