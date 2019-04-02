@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-0.0.7 (Apr 2, 2019)
+0.0.11 (Apr 2, 2019)
 -------------------
 
     * getting rid of all ip address that were hard-coded for shaheen

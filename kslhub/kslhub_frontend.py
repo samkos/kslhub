@@ -63,6 +63,8 @@ def start():
 
     if K.args.init:
       cmd = """
+         mkdir -p jobs logs runtime
+         chmod 777 jobs logs runtime
          # installing NERSC slurm magic  kernel
          mkdir -p /tmp/kslhub_initialization/BUILD
          cd /tmp/kslhub_initialization/BUILD
