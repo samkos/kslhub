@@ -160,6 +160,22 @@ class BatchSpawnerBase(Spawner):
         help="Other options to include into job submission script"
         )
 
+    hub_port = Integer(8080, config=True, \
+        help="Port where the hub is talking"
+        )
+
+    hub_ip = Unicode('localhost', config=True, \
+        help="IP of the hub"
+        )
+
+    proxy_port = Integer(8081, config=True, \
+        help="Port where the proxy is talking"
+        )
+
+    proxy_ip = Unicode('localhost', config=True, \
+        help="IP of the proxy"
+        )
+
     req_username = Unicode()
     def _req_username_default(self):
         return self.user.name
@@ -275,7 +291,7 @@ class BatchSpawnerBase(Spawner):
                 export JUPYTERHUB_BASE_URL=/
                 export JUPYTERHUB_CLIENT_ID=jupyterhub-user-__USER__
                 export JUPYTERHUB_API_TOKEN=__TOKEN__
-                export JUPYTERHUB_API_URL=http://__HOST__:9991/hub/api
+                export JUPYTERHUB_API_URL=http://__HOST__:__PORT__/hub/api
                 export JUPYTERHUB_USER=__USER__
                 export JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback
                 export JUPYTERHUB_HOST=
@@ -327,7 +343,9 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__SECRET__", oauth_client.secret)
         script = script.replace("__USER__", self.user.name)
         # SKKKKKKKK to be fixed!!!
-        script = script.replace("__HOST__", "10.129.35.32")
+        script = script.replace("__HOST__", self.proxy_ip)
+        script = script.replace("__PORT__", str(self.proxy_port))
+        script = script.replace("__NOTEBOOK_PORT__",str(self.user.server.port))
         if os.getenv("PYTHONPATH"):
             script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH"))
         

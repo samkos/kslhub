@@ -105,6 +105,12 @@ class Proxy(LoggingConfigurable):
         such as by systemd, docker, or another service manager.
         """)
 
+    api_url = Unicode(config=True,
+                    help="""The ip (or hostname) of the proxy's API endpoint"""
+    )
+
+
+
     def start(self):
         """Start the proxy.
 
@@ -436,10 +442,6 @@ class ConfigurableHTTPProxy(Proxy):
             self.log.info("Generating new CONFIGPROXY_AUTH_TOKEN")
             token = utils.new_token()
         return token
-
-    api_url = Unicode(config=True,
-                      help="""The ip (or hostname) of the proxy's API endpoint"""
-                      )
 
     @default('api_url')
     def _api_url_default(self):
