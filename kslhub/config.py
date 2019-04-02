@@ -6,8 +6,9 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 current_host=s.getsockname()[0]
 
+# force your own interface here... interface has to be reachable from a compute node
+# current_host="10.129.35.32"
 
-current_host="10.129.35.32"
 hub_port = 20030
 proxy_port = 9799
 

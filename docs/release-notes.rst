@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+0.0.7 (Apr 2, 2019)
+-------------------
+
+    * getting rid of all ip address that were hard-coded for shaheen
+    * updated configuration file allowing to choose ip and port for the hub and proxy
+    * released for test only.
+
+
 0.0.5 (Mar 19, 2019)
 -------------------
 
