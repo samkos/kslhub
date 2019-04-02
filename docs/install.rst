@@ -79,7 +79,9 @@ then let's install *kslhub* via pip::
 
    $ pip install kslhub
    
+as well as one prerequisite::
 
+   $ conda install -y configurable-http-proxy
    
 .. _install-source:
 
