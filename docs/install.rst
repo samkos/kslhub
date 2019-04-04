@@ -67,22 +67,21 @@ Or alternatively, using the source tarball::
 Installing *KslHub* using Anaconda
 ------------------------------------
 
-In a future release,
-*KslHub* is planed to be available in Anaconda from the hpc4all_
-channel. It will be installed with the command::
+One have to b sure to have a conda environment with a version of
+python at least greater than 3.6 with pip installed. For this let's
+create a new conda environment::
 
-   $ conda install -c hpc4all kslhub
+   $ conda create --name my_kslhub pip python==3.6
 
+   $ conda activate my_kslhub
+   
+then let's install *kslhub* via pip::
 
-Installing *KslHub* using Docker
-------------------------------------
+   $ pip install kslhub
+   
+as well as one prerequisite::
 
-A docker image is also available for use from the docker hub. It is regularly
-updated and lives at https://hub.docker.com/r/samkos/kslhub
-
-
-
-
+   $ conda install -y configurable-http-proxy
    
 .. _install-source:
 
@@ -92,11 +91,8 @@ Source
 ------
 
 Current source is available on  Github, use the following command to retrieve
-the latest stable version from the repository::
+the most updated  version from the repository::
 
-    $ git clone http://github/KAUST-KSL/kslhub.git
-
-and for the development version::
 
     $ git clone git@github.com:samkos/kslhub.git
 
