@@ -4,18 +4,21 @@ import re
 def build_time(tag,fields,case):
     tag_text = fields.pop(0)
     s = """
-          <tr class='additional case_%s'>
+          <tr class='additional case___CASE__'>
             <td>
-              <label class="control-label">%s</label>
+              <label class="control-label">__TAG_TEXT__</label>
             </td>
             <td >
-              <input id="%s-hours-text"   size="2" value="0"  type="tel"> h
-              <input id="%s-minutes-text" size="2" value="30" type="tel"> m
-              <input name="dyn_dyn_%s_dyn_%s" size="5" value="00:30"  type="hidden"> 
+              <input id="__CASE__-__TAG__-hours"   size="2" value="0"  type="tel" 
+                     onChange="$('#__CASE__-__TAG__-whole').val($('#__CASE__-__TAG__-hours').val()+':'+$('#__CASE__-__TAG__-minutes').val()+':00')" > h
+              <input id="__CASE__-__TAG__-minutes" size="2" value="30" type="tel"
+                     onChange="$('#__CASE__-__TAG__-whole').val($('#__CASE__-__TAG__-hours').val()+':'+$('#__CASE__-__TAG__-minutes').val()+':00')" > m
+              <input id="__CASE__-__TAG__-whole" name="dyn_dyn___CASE___dyn___TAG__" size="5" value="00:30:00"  type="hidden">
             </td>
           </tr>
 
-    """ % (case,tag_text,tag, tag, case,tag)
+    """
+    s = s.replace('__CASE__',case).replace('__TAG_TEXT__',tag_text).replace('__TAG__',tag)
     return s
 
 def build_select(tag,fields,case):
