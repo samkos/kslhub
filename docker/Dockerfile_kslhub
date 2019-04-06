@@ -29,7 +29,17 @@ RUN cd /kslhub \
     && git pull \
     && . ./Install_here.sh
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint_all_in_one.sh
+
+EXPOSE 8000
+
+ENTRYPOINT gosu munge /usr/sbin/munged \
+    && echo "---> Starting the Slurm Controller Daemon (slurmctld) ..." \
+    && exec gosu slurm /usr/sbin/slurmctld -Dvvv \
+    && echo "---> Starting the Slurm Node Daemon (slurmd) ..." \
+    && exec /usr/sbin/slurmd \
+    && echo "---> Starting kslhub ..." \
+    && cd /kslhub/INSTALL \
+    && bash  Run_kslhub.sh 
 
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

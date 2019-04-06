@@ -12,5 +12,6 @@ export INCLUDE=$CONDA_DEFAULT_ENV/include:$INCLUDE
 
 source activate  $CONDA_DIR
 
+cd $INSTALL_DIR
 kslhub --port $HUB_PORT -f ../config/kslhub_config_slurm.py
 

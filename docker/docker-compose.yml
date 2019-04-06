@@ -86,6 +86,8 @@ services:
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
       - kslhub:/kslhub
+    ports:
+        - "127.0.0.1:8000:8000"
     expose:
       - "8000"
 
