@@ -122,15 +122,18 @@ ml python/miniconda3-4.5.12
 conda create -y -p /home/kortass/KSLHUB_TEST/env_test 'python>=3 ' pip
 . /home/kortass/APPS/miniconda3-4.5.12/etc/profile.d/conda.sh
 conda activate /home/kortass/KSLHUB_TEST/env_test
-pip install /home/kortass/KSLHUB/dist/ksl*tar.gz
+pip install dist/ksl*tar.gz
 
 kslhub -h
 kslhub --init
 kslhub --generate-job-templates
 kslhub
 
-* install in docker
 
+pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0.0.10
+
+* install in docker
+** conda container
 docker run -t -i -d -p 9003:9000 --name conda continuumio/anaconda3
 d cp /home/kortass/KSLHUB/dist/ksl*tar.gz conda:/root
 db conda
@@ -145,7 +148,6 @@ pip install /root/ksl*tar.gz
 
 
 
-pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0.0.10
 
 
 
