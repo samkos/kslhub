@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+0.0.12 (Apr 2, 2019)
+-------------------
+   * taking care of default choice in template
+
 0.0.11 (Apr 2, 2019)
 -------------------
 
