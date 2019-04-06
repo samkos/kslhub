@@ -1,22 +1,27 @@
 echo KSLHUB Installation Step 1: initialize environment
+
 export SRC_DIR=$PWD
-export CONDA_DIR=$SRC_DIR/env
+export INSTALL_DIR=$PWD/INSTALL
+export BUILD_DIR=$INSTALL_DIR/BUILD
+mkdir -p $BUILD_DIR $INSTALL_DIR
+
+export CONDA_DIR=$INSTALL_DIR/kslhub_conda_env
 export HUB_PORT=8888
-git clone git@github.com:samkos/kslhub.git $SRC_DIR
-cd $SRC_DIR
 
 
 echo KSLHUB Installation Step 1.1:install miniconda 3.7
 
-cd $SRC_DIR
-mkdir -p BUILD/MINICONDA
-cd BUILD/MINICONDA
+cd $INSTALL_DIR
+
+mkdir -p $BUILD_DIR/MINICONDA
+cd $BUILD_DIR/MINICONDA
+
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x ./Miniconda3-latest-Linux-x86_64.sh
-./Miniconda3-latest-Linux-x86_64.sh -p $SRC_DIR/miniconda -b
+./Miniconda3-latest-Linux-x86_64.sh -p $INSTALL_DIR/miniconda -b
 
-export CONDA_DEFAULT_ENV=$SRC_DIR/miniconda
-export CONDA_PREFIX=$SRC_DIR/miniconda
+export CONDA_DEFAULT_ENV=$INSTALL_DIR/miniconda
+export CONDA_PREFIX=$INSTALL_DIR/miniconda
 export PATH=$CONDA_DEFAULT_ENV/bin:$PATH
 export MANPATH=$CONDA_DEFAULT_ENV/share/man:MANPATH
 export LD_LIBRARY_PATH=$CONDA_DEFAULT_ENV/lib:$LD_LIBRARY_PATH
@@ -39,11 +44,11 @@ pip install kslhub
 
 echo KSLHUB Installation Step 2.1: configuration of kslhub
 
-cd $SRC_DIR
+cd $INSTALL_DIR
 kslhub -h
 kslhub --init
 
 echo KSLHUB Installation Step 1: running kslhub
 
-kslhub --port $HUB_PORT -f config/kslhub_config_slurm.py
+kslhub --port $HUB_PORT -f ../config/kslhub_config_slurm.py
 
