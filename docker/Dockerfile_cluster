@@ -88,8 +88,24 @@ RUN set -x \
     && chown -R slurm:slurm /var/*/slurm* \
     && /sbin/create-munge-key
 
+
+RUN cd / \
+    && git clone https://github.com/samkos/kslhub.git
+
+RUN cd /kslhub \
+    && git pull \
+    && . ./Install_here.sh
+
+RUN groupadd -r users --gid=1000 \
+    && useradd -r -g user --uid=1001 sam
+    && useradd -r -g user --uid=1002 kristi
+
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+
+
+
+
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

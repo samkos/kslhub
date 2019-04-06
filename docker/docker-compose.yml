@@ -52,6 +52,7 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - kslhub:/kslhub
     expose:
       - "6818"
     depends_on:
@@ -67,6 +68,7 @@ services:
       - etc_slurm:/etc/slurm
       - slurm_jobdir:/data
       - var_log_slurm:/var/log/slurm
+      - kslhub:/kslhub
     expose:
       - "6818"
     depends_on:
@@ -75,9 +77,15 @@ services:
 
   kslhub:
     image: kslhub
-    command: ["slurmdbd"]
+    command: ["/usr/bin/sleep","1000"]
     container_name: kslhub
     hostname: kslhub
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - slurm_jobdir:/data
+      - var_log_slurm:/var/log/slurm
+      - kslhub:/kslhub
     expose:
       - "8000"
 
@@ -88,3 +96,4 @@ volumes:
   slurm_jobdir:
   var_lib_mysql:
   var_log_slurm:
+  kslhub:

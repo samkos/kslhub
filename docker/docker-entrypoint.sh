@@ -61,7 +61,7 @@ fi
 if [ "$1" = "kslhub" ]
 then
     echo "---> Starting kslhub ..."
-    cd /kslhub
-    exec bash  Run_kslhub.sh
+    cd /kslhub/INSTALL
+    bash  Run_kslhub.sh
 fi
 exec "$@"
