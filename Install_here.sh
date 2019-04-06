@@ -48,7 +48,4 @@ cd $INSTALL_DIR
 kslhub -h
 kslhub --init
 
-echo KSLHUB Installation Step 1: running kslhub
-
-kslhub --port $HUB_PORT -f ../config/kslhub_config_slurm.py
 

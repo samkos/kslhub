@@ -72,6 +72,16 @@ services:
     depends_on:
       - "slurmctld"
 
+
+  kslhub:
+    image: kslhub
+    command: ["slurmdbd"]
+    container_name: kslhub
+    hostname: kslhub
+    expose:
+      - "8000"
+
+
 volumes:
   etc_munge:
   etc_slurm:

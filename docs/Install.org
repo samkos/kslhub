@@ -151,6 +151,12 @@ pip install /root/ksl*tar.gz
 
 
 
+** build container 
+cd docker
+# docker build --no-cache - t kslhub .
+docker build -t slurm-docker-cluster:17.02.11 -f Dockerfile_cluster .
+docker build -t kslhub -f Dockerfile_kslhub .
+docker run -h c1 -t -i kslhub bash
 
 * develop/debug
 

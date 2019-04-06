@@ -88,15 +88,13 @@ RUN set -x \
     && chown -R slurm:slurm /var/*/slurm* \
     && /sbin/create-munge-key
 
-COPY slurm_all_in_one.conf /etc/slurm/slurm.conf
+COPY slurm.conf /etc/slurm/slurm.conf
+COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 
-RUN gosu munge /usr/sbin/munged
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-RUN gosu slurm /usr/sbin/slurmctld
-
-#RUN gosu slurm /usr/sbin/slurmd
-
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint_all_in_one.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 
 
+CMD ["slurmdbd"]
