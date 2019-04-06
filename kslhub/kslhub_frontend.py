@@ -96,7 +96,7 @@ def start():
               "\tplease rename it or move it before generating again the default file\n" ) % \
               produced_config_dir)
         sys.exit(-1)
-      os.system("cp %s/share/kslhub/config.py %s"  % (sys.base_prefix, produced_config_dir))
+      os.system("cp %s/share/kslhub/config/config.py %s"  % (sys.base_prefix, produced_config_dir))
       print("Writing default config to: %s " % produced_config_dir)
       sys.exit(0)
     elif K.args.generate_job_templates:

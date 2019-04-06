@@ -38,17 +38,19 @@ def get_data_files():
     data_files = []
     ntrim = len(here + os.path.sep)
 
-    for (d, dirs, filenames) in os.walk(pjoin('kslhub','templates')):
+    for (d, dirs, filenames) in os.walk(pjoin('templates')):
        data_files.append(('share/kslhub/templates/', [pjoin(d, f) for f in filenames]))
 
-    for (d, dirs, filenames) in os.walk(pjoin('kslhub','job_templates')):
+    for (d, dirs, filenames) in os.walk(pjoin('job_templates')):
        data_files.append(('share/kslhub/job_templates/', [pjoin(d, f) for f in filenames]))
+
+    for (d, dirs, filenames) in os.walk(pjoin('config')):
+       data_files.append(('share/kslhub/config/', [pjoin(d, f) for f in filenames]))
 
     site_packages_dir = "lib/python%d.%d/site-packages" % (sys.version_info[0],sys.version_info[1])
     
     data_files = data_files + \
-                 [ ("share/kslhub", ["kslhub/config.py", "kslhub/config_docker_slurm.py"]), \
-                   ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
+                 [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
                    ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
                    ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
                                             'jupyterhub/jupyterhub/handlers/pages.py'])]
@@ -79,7 +81,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="0.0.12",  # Required
+    version="0.0.13",  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
