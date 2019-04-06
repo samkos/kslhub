@@ -158,7 +158,11 @@ docker build -t slurm-docker-cluster:17.02.11 -f Dockerfile_cluster .
 #docker build -t kslhub -f Dockerfile_kslhub .
 docker build -t kslhub_slurm -f Dockerfile_kslhub_slurm .
 #docker run -h kslhub -t -i kslhub 
-docker run -h kslhub  -t -i -p 8000:8000 kslhub_slurm 
+docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm 
+
+
+db kslhub
+systemctl restart sshd.service
 
 
 
