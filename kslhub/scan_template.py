@@ -45,20 +45,22 @@ def build_select(tag,fields,case):
 
 def build_input(tag,fields,case):
     tag_text = fields.pop(0)
+    tag_type = "text"
+    tag_default_value = ""
     if len(fields):
         tag_type = fields.pop(0)
-    else:
-        tag_type = "text"
+        if len(fields):
+            tag_default_value = fields.pop(0)
     s = """
           <tr class='additional case_%s'>
             <td>
               <label class="control-label">%s</label>
             </td>
             <td>
-              <input name="dyn_dyn_%s_dyn_%s" type="%s">
+              <input name="dyn_dyn_%s_dyn_%s" type="%s" value="%s">
 
 
-    """ % (case,tag_text,case,tag,tag_type)
+    """ % (case,tag_text,case,tag,tag_type,tag_default_value)
 
 
     s = s + """
