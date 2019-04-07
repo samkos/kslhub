@@ -90,6 +90,8 @@ RUN set -x \
     && /sbin/create-munge-key
 
 
+
+
 RUN cd / \
     && git clone https://github.com/samkos/kslhub.git
 
@@ -99,13 +101,13 @@ RUN cd /kslhub \
     && git pull \
     && . ./Install_here.sh
 
-RUN useradd  -r -g users --uid=1001 sk && mkdir -p /home/sk \
-    && useradd -r -g users --uid=1002 kristi && mkdir -p /home/kristi \
-    && useradd -r -g users --uid=1003 jim && mkdir -p /home/jim 
+RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
+    && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
+    && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
 
-RUN echo sk:ksl123 | chpasswd 
-RUN echo kristi:ksl123 | chpasswd 
-RUN echo jim:ksl123 | chpasswd 
+RUN echo hub:hub | chpasswd 
+RUN echo bob:bob | chpasswd 
+RUN echo alice:alice | chpasswd 
 
 COPY slurm_five_in_one.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
@@ -114,9 +116,25 @@ COPY Run_kslhub.sh /kslhub/Run_kslhub.sh
 EXPOSE 8000
 EXPOSE 22
 
-WORKDIR /kslhub
+WORKDIR /home/hub
+
+RUN gosu hub git clone https://github.com/samkos/kslhub.git 
+
+COPY Install_here.sh /home/hub/kslhub/Install_here.sh
+
+WORKDIR /home/hub/kslhub
+
+RUN chown -R hub.users /home/hub \
+    && gosu hub bash  ./Install_here.sh
+
+
 
 RUN /usr/bin/ssh-keygen -A
+
+
+RUN gosu hub git pull \
+    && sed "s|__PWD__|$PWD|g" append_to_bashrc.template >> .bashrc
+
 
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
     && gosu munge /usr/sbin/munged \
@@ -127,5 +145,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && gosu slurm slurmd -N c4  \
     && gosu slurm slurmd -N c5  \	
     && /usr/sbin/sshd \
-    && exec bash  Run_kslhub.sh 
+    && exec gosu hub kslhub -h
 
