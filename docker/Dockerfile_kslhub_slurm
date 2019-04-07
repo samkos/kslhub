@@ -133,8 +133,13 @@ RUN /usr/bin/ssh-keygen -A
 
 
 RUN gosu hub git pull \
-    && sed "s|__PWD__|$PWD|g" append_to_bashrc.template >> .bashrc
+    && sed "s|__PWD__|$PWD|g" scripts/append_to_bashrc.template >> /home/hub/.bashrc \
+    && echo . /home/hub/.bashrc > /home/hub/.profile \
+    && chown -R hub.users /home/hub 
 
+WORKDIR /home/hub/kslhub/INSTALL
+
+RUN gosu hub bash -c '. ~/.bashrc && kslhub --init && kslhub   --generate-job-templates'
 
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
     && gosu munge /usr/sbin/munged \
@@ -145,5 +150,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && gosu slurm slurmd -N c4  \
     && gosu slurm slurmd -N c5  \	
     && /usr/sbin/sshd \
-    && exec gosu hub kslhub -h
+    && exec gosu hub bash -c '. ~/.bashrc && kslhub -f ../config/kslhub_config_slurm.py'
 
