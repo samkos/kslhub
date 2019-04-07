@@ -34,8 +34,8 @@ source activate  $CONDA_DIR
 conda install -y -c  conda-forge/label/cf201901 configurable-http-proxy==3.1.0 nodejs==8.10
 conda install -y jupyterlab jupyterhub=0.9.4
 
-#jupyter labextension install  @jupyterlab/hub-extension
-#jupyter labextension install  @jupyter-widgets/jupyterlab-manager   jupyter-matplotlib
+jupyter labextension install  @jupyterlab/hub-extension
+jupyter labextension install  @jupyter-widgets/jupyterlab-manager   jupyter-matplotlib
 
 
 echo KSLHUB Installation Step 2: Installation of kslhub 

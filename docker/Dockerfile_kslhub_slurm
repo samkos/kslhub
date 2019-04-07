@@ -92,15 +92,6 @@ RUN set -x \
 
 
 
-RUN cd / \
-    && git clone https://github.com/samkos/kslhub.git
-
-
-COPY Install_here.sh /kslhub/Install_here.sh
-RUN cd /kslhub \
-    && git pull \
-    && . ./Install_here.sh
-
 RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
     && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
     && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
@@ -111,7 +102,6 @@ RUN echo alice:alice | chpasswd
 
 COPY slurm_five_in_one.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
-COPY Run_kslhub.sh /kslhub/Run_kslhub.sh
 
 EXPOSE 8000
 EXPOSE 22
@@ -137,6 +127,7 @@ RUN gosu hub git pull \
     && echo . /home/hub/.bashrc > /home/hub/.profile \
     && chown -R hub.users /home/hub 
 
+
 WORKDIR /home/hub/kslhub/INSTALL
 
 RUN gosu hub bash -c '. ~/.bashrc && kslhub --init && kslhub   --generate-job-templates'
@@ -150,5 +141,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && gosu slurm slurmd -N c4  \
     && gosu slurm slurmd -N c5  \	
     && /usr/sbin/sshd \
-    && exec gosu hub bash -c '. ~/.bashrc && kslhub -f ../config/kslhub_config_slurm.py'
+    && exec gosu hub bash -c '. ~/.bashrc && git pull && kslhub -f ../config/kslhub_config_docker_slurm.py'
 
