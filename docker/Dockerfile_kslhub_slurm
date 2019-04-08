@@ -110,12 +110,12 @@ WORKDIR /home/hub
 
 RUN gosu hub git clone https://github.com/samkos/kslhub.git 
 
-COPY Install_here.sh /home/hub/kslhub/Install_here.sh
+COPY Install_here.sh /home/hub/kslhub/scripts/Install_here.sh
 
 WORKDIR /home/hub/kslhub
 
 RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./Install_here.sh
+    && gosu hub bash  ./scripts/Install_here.sh
 
 
 
@@ -128,8 +128,6 @@ RUN sed "s|__PWD__|/home/hub/kslhub|g" scripts/append_to_bashrc.template >> /hom
 RUN chown -R hub.users /home/hub/.bashrc /home/hub/.profile 
 
 
-WORKDIR /home/hub/kslhub/INSTALL
-
 RUN gosu hub bash -c '. ~/.bashrc && kslhub --init && kslhub   --generate-job-templates'
 
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
@@ -141,6 +139,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && gosu slurm slurmd -N c4  \
     && gosu slurm slurmd -N c5  \	
     && /usr/sbin/sshd \
-    && exec /usr/bin/sleep 36000 \
-    && exec gosu hub bash -c '. ~/.bashrc && git pull && kslhub -f ../config/kslhub_config_docker_slurm.py'
+    && exec gosu hub bash -c '. ~/.bashrc && git pull && kslhub -f docker_slurm'
 

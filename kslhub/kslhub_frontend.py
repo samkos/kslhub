@@ -6,7 +6,7 @@ import sys
 
 DEBUG = False
 
-VERSION =-"0.0.14"
+VERSION = "0.0.14"
 
 cmd_line = (" ".join(sys.argv))
 

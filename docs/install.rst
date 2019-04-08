@@ -57,8 +57,8 @@ respective name.
 in the directory */home/hub/kslhub/*. He has the responsability to
 launch the hub:
 
-  $ cd kslhub/INSTALL
-  $ kslhub -f ../config/kslhub_config_docker_slurm.py
+  $ cd kslhub
+  $ kslhub -f docker_slurm
 
 In this configuration, *kslhub*  responds on port 8000 of your localhost (thanks to the port
 mapping * *docker run -p 8000:8000*), and one can connect to
@@ -88,25 +88,16 @@ Running this script should:
 The output log of this execution are expected to append the file *<current_directory>/Install_here.log*.
   
     
-Once the script completed, a fully functional *kslhub* working environment. To start using it,
-remember to load the newly created conda environment with the following commands::
+Once the script completed, a fully functional *kslhub* working environment as well as a
+shell script named *kslhub_init_env.sh*. To start using it,
+load the newly created conda environment with the following commands::
 
-  export SRC_DIR=<current_directory>
-  export INSTALL_DIR=$PWD/INSTALL
-  export CONDA_DIR=$INSTALL_DIR/kslhub_conda_env
-  export HUB_PORT=8888
+  $ . kslhub_init_env.sh
 
-  export CONDA_DEFAULT_ENV=$INSTALL_DIR/miniconda
-  export CONDA_PREFIX=$INSTALL_DIR/miniconda
-  export PATH=$CONDA_DEFAULT_ENV/bin:$PATH
-  export MANPATH=$CONDA_DEFAULT_ENV/share/man:MANPATH
-  export LD_LIBRARY_PATH=$CONDA_DEFAULT_ENV/lib:$LD_LIBRARY_PATH
-  export INCLUDE=$CONDA_DEFAULT_ENV/include:$INCLUDE
 
-  source activate  $CONDA_DIR
+and run the hub::
 
-One could copy these lines in *~/.bashrc*.
-
+  $ kslhub
 
 
 
