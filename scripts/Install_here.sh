@@ -78,7 +78,6 @@ then
     echo Installing kslhub from the current directory
     pip install . >> Install_here.log 2&>1
     if [ $? -ne 0 ] ; then
-        echo $?
 	tail -10 Install_here.log
 	exit 1
     fi

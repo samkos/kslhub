@@ -55,15 +55,16 @@ respective name.
 
 *hub* is the user having *kslhub* already installed and preconfigured
 in the directory */home/hub/kslhub/*. He has the responsability to
-launch the hub:
+launch the hub::
 
   $ cd kslhub
   $ kslhub -f docker_slurm
 
 In this configuration, *kslhub*  responds on port 8000 of your localhost (thanks to the port
 mapping * *docker run -p 8000:8000*), and one can connect to
-the container via *ssh*, available on port 3333 of your localhost
-(thanks to the port mapping * *docker run ... -p 3333:22*)
+the container via *ssh*, available on port 33333 of your localhost
+(thanks to the port mapping * *docker run ... -p 33333:22*)
+
 
 
 

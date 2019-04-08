@@ -6,8 +6,6 @@ import sys
 
 DEBUG = False
 
-VERSION = "0.0.14"
-
 cmd_line = (" ".join(sys.argv))
 
 if 'KSLHUB_PARAMS' in os.environ.keys():
@@ -76,7 +74,7 @@ def start():
       os.system(cmd)
       print("creating working directory jobs, runtime and logs")
 
-      exit_after_generate_job_templates = False
+    exit_after_generate_job_templates = False
     if K.args.generate_job_templates:
       exit_after_generate_job_templates = True
       

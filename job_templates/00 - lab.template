@@ -3,8 +3,8 @@
 #SBATCH -n __nb_tasks;select;# tasks;1,2,3,4,8,16,32,64,128,512,1024__
 #SBATCH --partition=__partition;select;Queue;debug,workq__
 #SBATCH -J jupyterhub-singleuser
-#SBATCH -o __job_name;input;Job Name;text;my_job__.%j.out
-#SBATCH -e __job_name__.%j.err
+#SBATCH -o /tmp/__job_name;input;Job Name;text;my_job__.%j.out
+#SBATCH -e /tmp/__job_name__.%j.err
 #
 
 echo RUNNING on __nb_tasks__

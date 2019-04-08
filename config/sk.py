@@ -9,7 +9,7 @@ current_host=s.getsockname()[0]
 # force your own interface here... interface has to be reachable from a compute node
 # current_host="10.129.35.32"
 
-hub_port = 20030
+hub_port = 8000
 proxy_port = 9799
 
 print('current_host = %s' % current_host)
@@ -29,8 +29,8 @@ c.Spawner.debug  = True
 c.Authenticator.otp_required = False 
 c.Authenticator.host = 'localhost'
 
-c.Authenticator.hub_greeting_message = "Welcome to KSL Hub!"
-c.Authenticator.hub_name = "Shaheen"
+c.Authenticator.hub_greeting_message = "Welcome to KSL Hub @ SK!"
+c.Authenticator.hub_name = "SK"
 c.Authenticator.job_template_dir = "./job_templates"
 
 

@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+0.0.14 (Apr 8, 2019)
+-------------------
+   * bug fixing
+   * adding script/Install_here.sh that produces a kslhub environment in the current directory
+   * configuration of the hub is now accessible via full path of python config file or either just a name
+     to choose between configuration available per default
+   * automated creation of job_templates, jobs, runtime and logs directories if missing
+   * added a standardized _version file taken into account in setup.py
+
+
 0.0.13 (Apr 6, 2019)
 -------------------
    * taking care of default choice in template

@@ -2,7 +2,7 @@ import os
 import sys
 
 c.Authenticator.hub_greeting_message = "Welcome to KSL Hub @ docker!"
-c.Authenticator.hub_name = "Shaheen"
+c.Authenticator.hub_name = "Kslhub@docker"
 c.Authenticator.job_template_dir = "./job_templates"
 current_host = 'kslhub'
 #c.JupyterHub.hub_bind_url = 'http://%s:9001' % current_host
