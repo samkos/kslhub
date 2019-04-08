@@ -15,7 +15,7 @@ command::
 
     $ kslhub --init
 
-behind the scene, this command installs some nice jupyter notebook extensions as
+Behind the scene, this command installs some nice jupyter notebook extensions as
   - the slurm magic package
   - the support of widget
   - the support of bash commands in a notebook cell
@@ -33,7 +33,7 @@ The hub can be started with the following command::
 .. image:: images/default_welcoming_page.png
 
 
-By default, the hub interface shows this welcoming page on port 9000
+By default, the hub interface shows this welcoming page on port 8000
 with the user authenticated on the same machine thanks to regular
 username/password credentials. It will search for job templates files
 in the following directory::
