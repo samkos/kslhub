@@ -6,6 +6,8 @@ import sys
 
 DEBUG = False
 
+VERSION =-"0.0.14"
+
 cmd_line = (" ".join(sys.argv))
 
 if 'KSLHUB_PARAMS' in os.environ.keys():
@@ -24,7 +26,10 @@ class kslhub_frontend():
     self.parser.add_argument('--info', action="count", default=0, help=argparse.SUPPRESS)
 
     self.parser.add_argument('--init', action="store_true", default=False,
-                             help="Initialize the hub, complete some jupyter notebook initiaization")
+                             help="Initialize the hub")
+
+    self.parser.add_argument('--jupyter-config', action="store_true", default=False,
+                             help="complete some jupyter notebook initialization")
 
     self.parser.add_argument('--start', action="store_true", default=False,
                              help="start the hub")
@@ -36,7 +41,7 @@ class kslhub_frontend():
                              help="generate a set of default job template files")
 
     self.parser.add_argument("-f", "--config", type=str, help='hub configuration file',
-                             default= "%s/share/kslhub/config.py" % sys.base_prefix)
+                             default= "default")
     
     self.parser.add_argument("--port", type=int, help='port of the hub web interface (9000 per default)',
                              default=9000)
@@ -61,10 +66,38 @@ def start():
     K = kslhub_frontend()
     args = ""
 
-    if K.args.init:
+    
+    
+    if not(os.path.exists("jobs")):
       cmd = """
          mkdir -p jobs logs runtime
          chmod 777 jobs logs runtime
+      """
+      os.system(cmd)
+      print("creating working directory jobs, runtime and logs")
+
+      exit_after_generate_job_templates = False
+    if K.args.generate_job_templates:
+      exit_after_generate_job_templates = True
+      
+
+    if K.args.generate_job_templates or not(os.path.exists("job_templates")):
+      produced_template_dir = "./job_templates"
+      if os.path.exists(produced_template_dir):
+        print(("\nERROR: default template job directory %s already exists!\n" +\
+              "\tI will not dare overwrite it...\n" + \
+              "\tplease rename it or move it before generating again the default files\n" ) % \
+              produced_template_dir)
+        sys.exit(-1)
+      cmd = "cp -r %s/share/kslhub/job_templates ./"  % (sys.base_prefix)
+      os.system(cmd)
+      print("Writing default template to: %s " % produced_template_dir)
+      if exit_after_generate_job_templates:
+        sys.exit(0)
+      
+    
+    if K.args.jupyter_config:
+      cmd = """
          # installing NERSC slurm magic  kernel
          mkdir -p /tmp/kslhub_initialization/BUILD
          cd /tmp/kslhub_initialization/BUILD
@@ -80,13 +113,18 @@ def start():
          jupyter nbextensions_configurator enable --sys-prefix
          jupyter nbextension enable codefolding/main
          jupyter nbextension enable --py --sys-prefix widgetsnbextension
-         #jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+
+         jupyter labextension install @jupyter-widgets/jupyterlab-manager
+         jupyter labextension install  @jupyterlab/hub-extension
+         jupyter labextension install  @jupyter-widgets/jupyterlab-manager   jupyter-matplotlib
 
          cd /tmp
          rm -rf /tmp/kslhub_initialization
       """
       os.system(cmd)
       print("kslhub is now configured")
+
       
     elif K.args.generate_config:
       produced_config_dir = "./kslhub_config.py"
@@ -99,23 +137,22 @@ def start():
       os.system("cp %s/share/kslhub/config/config.py %s"  % (sys.base_prefix, produced_config_dir))
       print("Writing default config to: %s " % produced_config_dir)
       sys.exit(0)
-    elif K.args.generate_job_templates:
-      produced_template_dir = "./job_templates"
-      if os.path.exists(produced_template_dir):
-        print(("\nERROR: default template job directory %s already exists!\n" +\
-              "\tI will not dare overwrite it...\n" + \
-              "\tplease rename it or move it before generating again the default files\n" ) % \
-              produced_template_dir)
-        sys.exit(-1)
-      cmd = "cp -r %s/share/kslhub/job_templates ./"  % (sys.base_prefix)
-      os.system(cmd)
-      print("Writing default template to: %s " % produced_template_dir)
-      sys.exit(0)
+      
     else: 
       if K.args.config:
         if not(os.path.exists(K.args.config)):
-          print("\nERROR: configuration file %s does not exist!\n" % K.args.config)
-          sys.exit(-1)
+          if os.path.exists("%s/share/kslhub/config/%s.py" % (sys.base_prefix,K.args.config)):
+            K.args.config = "%s/share/kslhub/config/%s.py" % (sys.base_prefix,K.args.config)
+          else:
+            print("\nERROR: configuration file %s does not exist!" % K.args.config)
+            print("\t- either give a python config file path")
+            print("\t- or choose one of the configuration available in the directory %s/share/kslhub/config/: " % sys.base_prefix)
+            print("\t\t",end="")
+            for f in os.listdir("%s/share/kslhub/config/" % sys.base_prefix):
+              print("%s, " % f.replace(".py",""),end="")
+            print("\n")
+            sys.exit(-1)
+            
 
         args = args + "-f %s" % K.args.config
       cmd = "jupyterhub %s" % args

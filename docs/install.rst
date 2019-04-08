@@ -77,15 +77,17 @@ If you want to install a full wrking version of kslhub on a linux box,
 an installation script *Install_here.sh* is provided in the github
 repository. Go to a fresh directory and just source this script::
   
-    $ . ./Install_here.sh
-
+    $ . scripts/Install_here.sh
+    
 Running this script should:
 
-  - create a subdirectory called *<current_directory>/INSTALL*,
-  - download and install the latest version of miniconda in *<current_directory>/miniconda*,,
-  - create and configure correctly a conda environment in *<current_directory>/INSTALL/kslhub_conda_env*
+  - download and install the latest version of miniconda in *<current_directory>/BUILD/miniconda*,,
+  - create and configure correctly a conda environment in *<current_directory>/kslhub_conda_env*
   - in this conda environment, install and configure a *kslhub* working environment
 
+The output log of this execution are expected to append the file *<current_directory>/Install_here.log*.
+  
+    
 Once the script completed, a fully functional *kslhub* working environment. To start using it,
 remember to load the newly created conda environment with the following commands::
 

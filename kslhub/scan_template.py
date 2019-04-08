@@ -6,7 +6,7 @@ def build_time(tag,fields,case):
     s = """
           <tr class='additional case___CASE__'>
             <td>
-              <label class="control-label">__TAG_TEXT__</label>
+              <label class="control-label">__TAG_TEXT__</label>&nbsp &nbsp;
             </td>
             <td >
               <input id="__CASE__-__TAG__-hours"   size="2" value="0"  type="tel" 
@@ -26,7 +26,7 @@ def build_select(tag,fields,case):
     s = """
           <tr class='additional case_%s'>
             <td>
-              <label class="control-label">%s</label>
+              <label class="control-label">%s</label>&nbsp &nbsp;
             </td>
             <td>
               <select name="dyn_dyn_%s_dyn_%s" class="form-control dynamic jobform">
@@ -54,7 +54,7 @@ def build_input(tag,fields,case):
     s = """
           <tr class='additional case_%s'>
             <td>
-              <label class="control-label">%s</label>
+              <label class="control-label">%s</label>&nbsp &nbsp;
             </td>
             <td>
               <input name="dyn_dyn_%s_dyn_%s" type="%s" value="%s">
