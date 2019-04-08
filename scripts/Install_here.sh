@@ -45,6 +45,7 @@ else
     ./Miniconda3-latest-Linux-x86_64.sh -p $BUILD_DIR/miniconda -b >> Install_here.log 2&>1
 fi
 
+cd $SRC_DIR
 
 if [ -e $CONDA_DIR ]
 then

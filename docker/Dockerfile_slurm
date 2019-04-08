@@ -90,46 +90,6 @@ RUN set -x \
     && /sbin/create-munge-key
 
 
-
-
-RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
-    && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
-    && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
-
-RUN echo hub:hub | chpasswd 
-RUN echo bob:bob | chpasswd 
-RUN echo alice:alice | chpasswd 
-
-COPY slurm_five_in_one.conf /etc/slurm/slurm.conf
-COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
-
-EXPOSE 8000
-EXPOSE 22
-
-WORKDIR /home/hub
-
-RUN echo hi
-RUN gosu hub git clone https://github.com/samkos/kslhub.git 
-
-COPY Install_here_debug.sh /home/hub/kslhub/scripts/Install_here.sh
-
-WORKDIR /home/hub/kslhub
-
-RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./scripts/Install_here.sh
-
-
-
-RUN /usr/bin/ssh-keygen -A
-
-
-RUN cat /home/hub/kslhub/kslhub_init_env.sh >> /home/hub/.bashrc \
-    && echo . /home/hub/.bashrc > /home/hub/.profile
-
-RUN chown -R hub.users /home/hub/.bashrc /home/hub/.profile 
-
-
-
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
     && gosu munge /usr/sbin/munged \
     && gosu slurm /usr/sbin/slurmctld  \
@@ -138,9 +98,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && gosu slurm slurmd -N c3  \
     && gosu slurm slurmd -N c4  \
     && gosu slurm slurmd -N c5  \	
-    && /usr/sbin/sshd \
-    && exec  /usr/bin/sleep 1000
-
-
-#    && exec gosu hub bash -c '. ~/.bashrc && git pull && kslhub -f docker_slurm'
+    && exec /usr/sbin/sshd 
 
