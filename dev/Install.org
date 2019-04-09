@@ -156,9 +156,15 @@ cd docker
 # docker build --no-cache - t kslhub .
 docker build -t slurm-docker-cluster:17.02.11 -f Dockerfile_cluster .
 #docker build -t kslhub -f Dockerfile_kslhub .
-docker build -t kslhub_slurm -f Dockerfile_kslhub_slurm .
 #docker run -h kslhub -t -i kslhub 
+
+docker build -t kslhub_slurm -f Dockerfile_kslhub_slurm .
 docker run -h kslhub  -t -i --privileged -p 8000:8000 -p 33333:22 kslhub_slurm 
+
+
+
+docker build -t kslhub_slurm_mysql -f Dockerfile_kslhub_slurm_mysql .
+
 
 ** run on container
 ssh hub

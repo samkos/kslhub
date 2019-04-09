@@ -1,16 +1,40 @@
 FROM centos:7
-
-LABEL org.label-schema.vcs-url="https://github.com/giovtorres/slurm-docker-cluster" \
-      org.label-schema.docker.cmd="docker-compose up -d" \
-      org.label-schema.name="slurm-docker-cluster" \
-      org.label-schema.description="Slurm Docker cluster on CentOS 7" \
-      maintainer="Giovanni Torres"
-
 ARG SLURM_VERSION=17.02.11
 ARG SLURM_DOWNLOAD_MD5=b32f4260a921d335a2d52950593f0a29
 ARG SLURM_DOWNLOAD_URL=https://download.schedmd.com/slurm/slurm-17.02.11.tar.bz2
 
 ARG GOSU_VERSION=1.10
+
+
+ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-8.0.15
+ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.15
+
+# Install server
+RUN yum install -y https://repo.mysql.com/mysql-community-minimal-release-el7.rpm \
+      https://repo.mysql.com/mysql-community-release-el7.rpm \
+  && yum-config-manager --enable mysql80-server-minimal \
+  && yum install -y \
+      $MYSQL_SERVER_PACKAGE \
+      $MYSQL_SHELL_PACKAGE \
+      libpwquality \
+  && yum clean all \
+  && mkdir /docker-entrypoint-initdb.d
+
+VOLUME /var/lib/mysql
+
+COPY configure_mysql.sh /configure_mysql.sh
+COPY healthcheck.sh /healthcheck.sh
+
+
+RUN /configure_mysql.sh
+
+
+HEALTHCHECK CMD /healthcheck.sh
+EXPOSE 3306 33060
+
+
+
+
 
 RUN yum makecache fast \
     && yum -y install epel-release \
@@ -30,13 +54,15 @@ RUN yum makecache fast \
            python34 \
            python34-devel \
            python34-pip \
-           mariadb-server \
-           mariadb-devel \
            psmisc \
            bash-completion \
+	   pwgen \
+	   supervisor \
+	   net-tools	\
 	   openssh-server \
     && yum clean all \
     && rm -rf /var/cache/yum
+
 
 RUN pip install Cython nose \
     && pip install Cython nose
@@ -91,7 +117,6 @@ RUN set -x \
 
 
 
-
 RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
     && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
     && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
@@ -106,33 +131,34 @@ COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 EXPOSE 8000
 EXPOSE 22
 
-WORKDIR /home/hub
+# WORKDIR /home/hub
 
-RUN echo hi
-RUN gosu hub git clone https://github.com/samkos/kslhub.git 
+# RUN echo hi
+# RUN gosu hub git clone https://github.com/samkos/kslhub.git 
 
-COPY Install_here_debug.sh /home/hub/kslhub/scripts/Install_here.sh
+# COPY Install_here_debug.sh /home/hub/kslhub/scripts/Install_here.sh
 
-WORKDIR /home/hub/kslhub
+# WORKDIR /home/hub/kslhub
 
-RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./scripts/Install_here.sh
+# RUN chown -R hub.users /home/hub \
+#     && gosu hub bash  ./scripts/Install_here.sh
 
 
+
+# RUN cat /home/hub/kslhub/kslhub_init_env.sh >> /home/hub/.bashrc \
+#     && echo . /home/hub/.bashrc > /home/hub/.profile
+
+# RUN chown -R hub.users /home/hub/.bashrc /home/hub/.profile 
 
 RUN /usr/bin/ssh-keygen -A
 
-
-RUN cat /home/hub/kslhub/kslhub_init_env.sh >> /home/hub/.bashrc \
-    && echo . /home/hub/.bashrc > /home/hub/.profile
-
-RUN chown -R hub.users /home/hub/.bashrc /home/hub/.profile 
 
 
 
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
     && gosu munge /usr/sbin/munged \
     && gosu slurm /usr/sbin/slurmctld  \
+    && gosu slurm /usr/sbin/slurmdbd  \
     && gosu slurm slurmd -N c1 \
     && gosu slurm slurmd -N c2  \
     && gosu slurm slurmd -N c3  \
@@ -141,5 +167,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && /usr/sbin/sshd \
     && echo sleeping for 10000s \
     && exec /usr/bin/sleep 10000
-#   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_slurm'
+# # #   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_slurm'
 

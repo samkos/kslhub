@@ -297,7 +297,8 @@ class BatchSpawnerBase(Spawner):
                 export JUPYTERHUB_HOST=
                 export JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/
                 export CONFIGPROXY_AUTH_TOKEN=__SECRET__
-                export PYTHONPATH=__PYTHONPATH__
+                #export PYTHONPATH=__PYTHONPATH__
+                . /home/kortass/KSLHUB_TEST5/kslhub_init_env.sh
                 """ + "#" * 80 + "\n"
                 
                 env_done = True
@@ -346,8 +347,7 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__HOST__", self.proxy_ip)
         script = script.replace("__PORT__", str(self.proxy_port))
         script = script.replace("__NOTEBOOK_PORT__",str(self.user.server.port))
-        if os.getenv("PYTHONPATH"):
-            script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH"))
+        script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH",""))
         
 
         self.log.info('content after token replacement: \n' \

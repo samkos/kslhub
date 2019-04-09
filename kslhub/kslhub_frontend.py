@@ -3,6 +3,8 @@
 import argparse
 import os
 import sys
+from ._version import version_info, __version__
+
 
 DEBUG = False
 
@@ -31,6 +33,10 @@ class kslhub_frontend():
 
     self.parser.add_argument('--start', action="store_true", default=False,
                              help="start the hub")
+
+    self.parser.add_argument("-v", '--version', action="store_true", default=False,
+                             help="show hub current version ")
+
 
     self.parser.add_argument('--generate-config', action="store_true", default=False,
                              help="generate a default config file")
@@ -65,7 +71,10 @@ def start():
     args = ""
 
     
-    
+    if K.args.version:
+       print(version_info.__version__)
+       sys.exit(0)
+      
     if not(os.path.exists("jobs")):
       cmd = """
          mkdir -p jobs logs runtime

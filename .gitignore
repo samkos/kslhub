@@ -2,4 +2,6 @@ BUILD
 jobs
 runtime
 logs
-kslhub_conda_env
+kslhub_conda_envtest
+kslhub_conda_env/
+test
