@@ -24,6 +24,12 @@ _get_config() {
 	"$@" --verbose --help 2>/dev/null | grep "^$conf" | awk '$1 == "'"$conf"'" { print $2; exit }'
 }
 
+
+MYSQL_RANDOM_ROOT_PASSWORD=yes
+MYSQL_DATABASE=slurm_acct_db
+MYSQL_USER=slurm
+MYSQL_PASSWORD=password
+
 # If command starts with an option, prepend mysqld
 # This allows users to add command-line options without
 # needing to specify the "mysqld" command
@@ -135,6 +141,7 @@ EOF
 			mysql+=( "$MYSQL_DATABASE" )
 		fi
 
+		echo "$MYSQL_USER" / "$MYSQL_PASSWORD"
 		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]; then
 			echo "CREATE USER '"$MYSQL_USER"'@'%' IDENTIFIED BY '"$MYSQL_PASSWORD"' ;" | "${mysql[@]}"
 
