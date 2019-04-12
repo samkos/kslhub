@@ -8,7 +8,7 @@ MAINTAINER Samuel Kortas
 
 
 ## List all packages that we want to install
-ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev munge libmunge-dev openssh-server
+ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev munge libmunge-dev openssh-server vim
  
  
 # Install all packages
@@ -70,6 +70,8 @@ RUN /usr/bin/ssh-keygen -A
 RUN echo hub:hub | chpasswd 
 RUN echo bob:bob | chpasswd 
 RUN echo alice:alice | chpasswd 
+RUN chsh -s /bin/bash alice && chsh -s /bin/bash bob && chsh -s /bin/bash hub
+RUN mkdir -p /home/mysql && chown -R mysql    /home/mysql 
 
 COPY slurm_five_in_one.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
@@ -83,19 +85,28 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 
-ENTRYPOINT /entrypoint.sh mysqld
+#ENTRYPOINT /entrypoint.sh mysqld
 
 CMD mysqld
 
-### ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
-###     && gosu munge /usr/sbin/munged \
-###     && gosu slurm /usr/sbin/slurmctld  \
-###     && gosu slurm slurmd -N c1 \
-###     && gosu slurm slurmd -N c2  \
-###     && gosu slurm slurmd -N c3  \
-###     && gosu slurm slurmd -N c4  \
-###     && gosu slurm slurmd -N c5  \	
-###     && /usr/sbin/sshd \
-###     && echo sleeping for 10000s \
-###     && exec sleep 10000
-### #   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_slurm'
+ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
+    && gosu munge /usr/sbin/munged \
+    && /usr/sbin/sshd \
+    && /entrypoint.sh mysqld \
+    && service mysql start \
+    && slurmdbd \
+    && sacctmgr -i add cluster sk \
+    && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
+    && sacctmgr -i add user hub,alice,bob Account=main \
+    && /usr/sbin/slurmctld \
+    && slurmd -N c1 \
+    && slurmd -N c2  \
+    && slurmd -N c3  \
+    && slurmd -N c4  \
+    && slurmd -N c5  \	    
+    && echo sleeping for 10000s \
+     &&  exec sleep 10000
+#   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_slurm'
+    ### && sacctmgr -i add cluster sk \
+    ### && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
+    ### && sacctmgr -i add user hub,alice,bob Account=main 
