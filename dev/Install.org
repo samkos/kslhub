@@ -183,7 +183,7 @@ docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
 docker run -h -t -i kslhub mysql_for_slurm bash
 
 db mysql
-mysql -u slurm -p slurm_acct_db
+mysql -u slurm -ppassword slurm_acct_db
 password
 ** run on container
 ssh hub

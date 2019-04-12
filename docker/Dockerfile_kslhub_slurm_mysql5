@@ -78,8 +78,14 @@ EXPOSE 8000
 EXPOSE 22
 RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
 
-ENTRYPOINT /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
+RUN chmod +x /entrypoint.sh
+
+
+ENTRYPOINT /entrypoint.sh mysqld
+
+CMD mysqld
 
 ### ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
 ###     && gosu munge /usr/sbin/munged \
