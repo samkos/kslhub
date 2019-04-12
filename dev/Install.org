@@ -152,7 +152,12 @@ pip install /root/ksl*tar.gz
 
 
 
-** build container 
+** build container
+cd docker
+docker build -t kslhub_slurm_mysql -f Dockerfile_slurm_mysql .
+docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
+
+** build container  test
 cd docker
 # docker build --no-cache - t kslhub .
 docker build -t slurm-docker-cluster:17.02.11 -f Dockerfile_cluster .
@@ -183,8 +188,15 @@ docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
 docker run -h -t -i kslhub mysql_for_slurm bash
 
 db mysql
-mysql -u slurm -ppassword slurm_acct_db
-password
+mysql -u slurm -ppassword slurm_acct_db@kslhub
+
+mysql -u root -pmypassword
+SHOW GRANTS FOR 'root'@'localhost';
+SHOW GRANTS FOR 'slurm'@'localhost';
+GRANT ALL PRIVILEGES ON `slurm_acct_db`.* TO 'slurm'@'kslhub';
+SHOW GRANTS FOR 'slurm'@'kslhub';
+GRANT ALL PRIVILEGES ON *.* TO 'slurm'@'kslhub' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
 ** run on container
 ssh hub
 kslhub -f kslhub/config/kslhub_config_docker_slurm.py
