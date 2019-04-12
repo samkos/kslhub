@@ -25,15 +25,25 @@ c.JupyterHub.hub_bind_url = 'http://%s:%s' % (current_host,proxy_port)
 
 c.Spawner.debug  = True
 
-c.Authenticator.otp_required = False 
+
+
+
+c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.SshUserAuthenticator'
+c.Authenticator.otp_required = True 
 c.Authenticator.host = 'cdl2'
+
+
+
+
+
+
 
 c.Authenticator.hub_greeting_message = "Welcome to KSL Hub!"
 c.Authenticator.hub_name = "Shaheen"
 c.Authenticator.job_template_dir = "./job_templates"
 
 
-c.JupyterHub.authenticator_class = 'kslhub.otp_authenticator.SshUserAuthenticator'
+
 c.JupyterHub.template_paths = [ "%s/share/kslhub/templates" % sys.base_prefix ]
 
 

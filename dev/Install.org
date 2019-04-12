@@ -151,6 +151,7 @@ pip install /root/ksl*tar.gz
 
 
 
+
 ** build container 
 cd docker
 # docker build --no-cache - t kslhub .
@@ -164,11 +165,26 @@ docker run -h kslhub  -t -i --privileged -p 8000:8000 -p 33333:22 kslhub_slurm
 
 
 
-docker build -t kslhub_slurm_mysql -f Dockerfile_kslhub_slurm_mysql2 .
-
-
+docker build -t kslhub_slurm_mysql -f Dockerfile_kslhub_slurm_mysql3 .
 docker run -h kslhub  -t -i --privileged -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
 
+
+
+docker build -t mysql_ubuntu -f Dockerfile_mysql_ubuntu .
+docker run -h  mysql_ubuntu -t -i mysql_ubuntu bash
+
+
+
+docker run -d --name=test-mysql8 -e MYSQL_ROOT_PASSWORD=mypassword -e MYSQL_DATABASE=slurm_acct_db -e MYSQL_USER=slurm -e MYSQL_PASSWORD=password mysql:8.0
+dct myqsl mysql8_for_slurm
+docker build -t kslhub_slurm_mysql -f Dockerfile_kslhub_slurm_mysql5 .
+docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
+
+docker run -h -t -i kslhub mysql_for_slurm bash
+
+db mysql
+mysql -u slurm -p slurm_acct_db
+password
 ** run on container
 ssh hub
 kslhub -f kslhub/config/kslhub_config_docker_slurm.py
