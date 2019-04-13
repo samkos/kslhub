@@ -9,7 +9,7 @@ current_host=s.getsockname()[0]
 # force your own interface here... interface has to be reachable from a compute node
 # current_host="10.129.35.32"
 
-hub_port = 8000
+hub_port = 8887
 proxy_port = 9799
 
 print('current_host = %s' % current_host)
