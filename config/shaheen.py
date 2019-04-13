@@ -28,7 +28,7 @@ c.Spawner.debug  = True
 c.Authenticator.otp_required = False 
 c.Authenticator.host = 'cdl2'
 
-c.Authenticator.hub_greeting_message = "Welcome to KSL Hub!"
+c.Authenticator.hub_greeting_message = "Welcome to KSL Hub @ Shaheen !"
 c.Authenticator.hub_name = "Shaheen"
 c.Authenticator.job_template_dir = "./job_templates"
 
