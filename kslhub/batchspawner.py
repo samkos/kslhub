@@ -272,6 +272,7 @@ class BatchSpawnerBase(Spawner):
 
         script_env_set = ""
         env_done = False
+
         for l in script.split("\n"):
             if len(l)==0:
                 script_env_set = script_env_set + l + "\n"
@@ -306,10 +307,12 @@ class BatchSpawnerBase(Spawner):
                 "\nexport JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback" +\
                 "\nexport JUPYTERHUB_HOST=" +\
                 "\nexport JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/" +\
+                "\nexport JUPYTER_RUNTIME_DIR=__KSLHUB_ROOT__/runtime" +\
                 "\nexport CONFIGPROXY_AUTH_TOKEN=__SECRET__" +\
                 "\n\n"+ "#" * 80 + "\n" +\
                 "# Original script" +\
-                "\n"+ "#" * 80 + "\n"
+                "\n"+ "#" * 80 + "\n" +\
+                l + "\n"
                 
                 env_done = True
                 
