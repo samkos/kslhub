@@ -34,7 +34,7 @@ then
 
     
     echo debug environment put in place succesfully
-    
+    cd $GET_DIR
 
 else
     echo ./kslhub_init_env.sh does not exists, run script/Install_here first to set the environment correctly

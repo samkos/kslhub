@@ -154,8 +154,16 @@ pip install /root/ksl*tar.gz
 
 ** build container
 cd docker
+docker build -t kslhub .
+docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub
+
+
+**** slurm only
+cd docker
 docker build -t kslhub_slurm_mysql -f Dockerfile_slurm_mysql .
 docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
+
+
 
 ** build container  test
 cd docker

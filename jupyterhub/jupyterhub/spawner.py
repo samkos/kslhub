@@ -326,11 +326,11 @@ class Spawner(LoggingConfigurable):
         """)
 
     env_keep = List([
-        'PATH',
-        'PYTHONPATH',
-        'CONDA_ROOT',
-        'CONDA_DEFAULT_ENV',
-        'VIRTUAL_ENV',
+        # 'PATH',
+        # 'PYTHONPATH',
+        # 'CONDA_ROOT',
+        # 'CONDA_DEFAULT_ENV',
+        # 'VIRTUAL_ENV',
         'LANG',
         'LC_ALL',
     ],

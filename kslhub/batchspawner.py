@@ -59,13 +59,13 @@ slurm_machine = session_manager()
 
 @gen.coroutine
 def run_command(cmd, input=None, env=None, user=None):
-    print("SKKKKKKKKKk cmd run : |||%s||| " % cmd)
+    print("[AUTHENT] cmd run : |||%s||| " % cmd)
     #print("SKKKKKKKKKk env : |||%s||| " % pprint.pformat(env))
     #print("SKKKKKKKKKk cmd : |||%s||| " % pprint.pformat(cmd))
     #input_str = "|||%s||| " % pprint.pformat(input)
     #print("SKKKKKKKKKk input : %s, find_result: %s" % (input_str, input_str.find("|||None|||")))
-    print("[AUTHENT]================ here user=%s!!!" % user)
-    print("[AUTHENT] slurm_machine=%s   or %s" % (slurm_machine,pprint.pformat(slurm_machine)))
+    #print("[AUTHENT]================ here user=%s!!!" % user)
+    #print("[AUTHENT] slurm_machine=%s   or %s" % (slurm_machine,pprint.pformat(slurm_machine)))
     if user==None:
         print("[AUTHENT]===============  here user=None!!!")
         traceback.print_stack()
@@ -278,28 +278,38 @@ class BatchSpawnerBase(Spawner):
             elif l[0]=="#" or len(l.strip())==0 or env_done:
                 script_env_set = script_env_set + l + "\n"
             else:
-                vars = "#" * 80 + "\n# Environment variables to be forwarded....\n"
+                vars = "#" * 80 + \
+                       "\n# Script generated from template\n#\t%s" % os.path.abspath(template) + \
+                       "\n" +"#" * 80 + \
+                       "\n# Environment configuration to be forwarded...." +\
+                       "\n" +"#" * 80 + "\n\n"
                 for v in subvars['keepvars'].split(","):
                     if os.getenv(v):
-                        vars = vars + "export %s=%s\n " % (v,os.getenv(v))
-                vars = vars + "#" * 80 + "\n"
+                        vars = vars + "export %s=%s\n" % (v,os.getenv(v))
+                vars = vars + \
+                       "export KSLHUB_ROOT=__KSLHUB_ROOT__" +\
+                       "\n. $KSLHUB_ROOT/kslhub_init_env.sh" +\
+                       "\n\n" +\
+                       "#" * 80 + "\n# Setting connection with the hub\n" +\
+                       "#" * 80
+                
                 script_env_set = script_env_set + vars
 
                 # adding token and secret credential
 
-                script_env_set = script_env_set + """
-                export JUPYTERHUB_BASE_URL=/
-                export JUPYTERHUB_CLIENT_ID=jupyterhub-user-__USER__
-                export JUPYTERHUB_API_TOKEN=__TOKEN__
-                export JUPYTERHUB_API_URL=http://__HOST__:__PORT__/hub/api
-                export JUPYTERHUB_USER=__USER__
-                export JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback
-                export JUPYTERHUB_HOST=
-                export JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/
-                export CONFIGPROXY_AUTH_TOKEN=__SECRET__
-                #export PYTHONPATH=__PYTHONPATH__
-                . /home/kortass/KSLHUB_TEST5/kslhub_init_env.sh
-                """ + "#" * 80 + "\n"
+                script_env_set = script_env_set + \
+                "\nexport JUPYTERHUB_BASE_URL=/" +\
+                "\nexport JUPYTERHUB_CLIENT_ID=jupyterhub-user-__USER__" +\
+                "\nexport JUPYTERHUB_API_TOKEN=__TOKEN__" +\
+                "\nexport JUPYTERHUB_API_URL=http://__HOST__:__PORT__/hub/api" +\
+                "\nexport JUPYTERHUB_USER=__USER__" +\
+                "\nexport JUPYTERHUB_OAUTH_CALLBACK_URL=/user/__USER__/oauth_callback" +\
+                "\nexport JUPYTERHUB_HOST=" +\
+                "\nexport JUPYTERHUB_SERVICE_PREFIX=/user/__USER__/" +\
+                "\nexport CONFIGPROXY_AUTH_TOKEN=__SECRET__" +\
+                "\n\n"+ "#" * 80 + "\n" +\
+                "# Original script" +\
+                "\n"+ "#" * 80 + "\n"
                 
                 env_done = True
                 
@@ -348,6 +358,8 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__PORT__", str(self.proxy_port))
         script = script.replace("__NOTEBOOK_PORT__",str(self.user.server.port))
         script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH",""))
+        script = script.replace("__KSLHUB_ROOT__", os.getenv("KSLHUB_ROOT","."))
+        script = script.replace("__JOB_DIR__", os.getenv("KSLHUB_ROOT",".")+"/jobs/")
         
 
         self.log.info('content after token replacement: \n' \

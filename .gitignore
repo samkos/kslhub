@@ -4,4 +4,6 @@ runtime
 logs
 kslhub_conda_envtest
 kslhub_conda_env/
+kslhub_init_env.sh
+jupyterhub/jupyterhub
 test

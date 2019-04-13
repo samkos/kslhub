@@ -147,7 +147,7 @@ class SshUserAuthenticator(Authenticator):
                 return None
                 
         machine = handler.config.Authenticator.host
-        self.log.info("hello")
+        # self.log.info("hello")
         if slurm_machine.open(machine,data['username'],data['password']):
             return data['username']
         return None

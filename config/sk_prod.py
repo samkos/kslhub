@@ -6,9 +6,10 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 current_host=s.getsockname()[0]
 
+# force your own interface here... interface has to be reachable from a compute node
+# current_host="10.129.35.32"
 
-current_host="10.129.35.32"
-hub_port = 20030
+hub_port = 8000
 proxy_port = 9799
 
 print('current_host = %s' % current_host)
@@ -23,13 +24,13 @@ c.JupyterHub.hub_port = hub_port
 c.JupyterHub.bind_url = 'http://%s:%s' % (c.JupyterHub.hub_ip,c.JupyterHub.hub_port)
 c.JupyterHub.hub_bind_url = 'http://%s:%s' % (current_host,proxy_port)
 
-c.Spawner.debug  = True
+c.Spawner.debug  = False
 
 c.Authenticator.otp_required = False 
-c.Authenticator.host = 'cdl2'
+c.Authenticator.host = 'localhost'
 
-c.Authenticator.hub_greeting_message = "Welcome to KSL Hub!"
-c.Authenticator.hub_name = "Shaheen"
+c.Authenticator.hub_greeting_message = "Welcome to KSL Hub @ SK!"
+c.Authenticator.hub_name = "SK"
 c.Authenticator.job_template_dir = "./job_templates"
 
 

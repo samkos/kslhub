@@ -2,7 +2,7 @@ import paramiko
 import os,re, sys, traceback
 import pprint
 
-SSH_DEBUG=True
+SSH_DEBUG=False
 HOME = os.getenv("HOME")
 
 class session_manager(object):
@@ -79,9 +79,11 @@ class session_manager(object):
         try:
             connection.connect(self.actual_machine, username=login, password=password,
                                port=self.actual_default_port)
-            print("[AUTHENT] connection succeeded!!!")
+            if SSH_DEBUG:
+                print("[AUTHENT] connection succeeded!!!")
         except Exception as e:
-            print("[AUTHENT] connection failed!!!")
+            if SSH_DEBUG:
+                print("[AUTHENT] connection failed!!!")
             if user_connection_id in self.connections.keys():
                 del self.connections[user_connection_id] 
             if user_connection_id in self.passwords.keys():

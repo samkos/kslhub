@@ -156,13 +156,15 @@ def start():
             print("\t- or choose one of the configuration available in the directory %s/share/kslhub/config/: " % sys.base_prefix)
             print("\t\t",end="")
             for f in os.listdir("%s/share/kslhub/config/" % sys.base_prefix):
+              if f.find("__pycache__")>-1 or f[-1]=="~":
+                continue
               print("%s, " % f.replace(".py",""),end="")
             print("\n")
             sys.exit(-1)
             
 
         args = args + "-f %s" % K.args.config
-      cmd = "jupyterhub %s" % args
+      cmd = "export KSLHUB_ROOT=%s; jupyterhub %s" % (os.getcwd(),args)
       print("should start the hub with command : /%s/" % cmd)
       os.system(cmd)
 

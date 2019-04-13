@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+0.0.15 (Apr 13, 2019)
+-------------------
+   * bug fixing
+   * docker file ready
+   * sourcing ksl_init_env.sh added to the initialization of the job
+   * KSLHUB_ROOT is gathered from the hub launching directory and forwarded to the spawned job
+   * cleaning of template generation
+
 0.0.14 (Apr 8, 2019)
 -------------------
    * bug fixing

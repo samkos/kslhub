@@ -74,7 +74,12 @@ def build_gui_from_template(job_file,case):
 
     job_file_content = "".join(open(job_file,"r").readlines())
 
-    variables =  [ x[2:-2] for x in re.findall('__.+__', job_file_content)]
+    # wrong way to parse: couldn't catch __xxx__/__yyy__
+    #    xxx__/__yyy was detected as variable
+    # variables =  [ x[2:-2] for x in re.findall('__.+__', job_file_content)]
+    
+    v = job_file_content.split("__")
+    variables=[ v[i*2+1] for i in range(len(v)//2)  ]
 
     tags = {}
 
