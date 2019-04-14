@@ -121,8 +121,11 @@ RUN chown -R hub.users /home/hub \
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 
-ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
-    ##&& /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
+ENTRYPOINT \
+## /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
+    /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
+    && gosu hub git pull \
+    && gosu hub bash ./scripts/Debug_here.sh \
     && /configure_mysql.sh mysqld \
     && gosu munge /usr/sbin/munged \
     && /usr/sbin/sshd \
@@ -142,5 +145,5 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && /usr/sbin/slurmctld \
     && echo sleeping for 10000s \
     #&&  exec sleep 10000
-    && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f sk'
+    && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_prod'
 

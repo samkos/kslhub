@@ -288,7 +288,8 @@ class BatchSpawnerBase(Spawner):
                     if os.getenv(v):
                         vars = vars + "export %s=%s\n" % (v,os.getenv(v))
                 vars = vars + \
-                       "export KSLHUB_ROOT=__KSLHUB_ROOT__" +\
+                       "export USER=__USER__" + \
+                       "\nexport KSLHUB_ROOT=__KSLHUB_ROOT__" +\
                        "\n. $KSLHUB_ROOT/kslhub_init_env.sh" +\
                        "\n\n" +\
                        "#" * 80 + "\n# Setting connection with the hub\n" +\
@@ -362,6 +363,7 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__NOTEBOOK_PORT__",str(self.user.server.port))
         script = script.replace("__PYTHONPATH__", os.getenv("PYTHONPATH",""))
         script = script.replace("__KSLHUB_ROOT__", os.getenv("KSLHUB_ROOT","."))
+        script = script.replace("__USER__", os.getenv("USER","$USER"))
         script = script.replace("__JOB_DIR__", os.getenv("KSLHUB_ROOT",".")+"/jobs/")
         
 

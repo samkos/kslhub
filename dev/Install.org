@@ -357,6 +357,10 @@ make html
 *
 /usr/bin/ssh-keygen -A
 
+* troubleshooting
+** user not defined
+comes from USER environment variable undefined....
+
 * testing
 
 

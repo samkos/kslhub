@@ -9,8 +9,9 @@ current_host=s.getsockname()[0]
 # force your own interface here... interface has to be reachable from a compute node
 # current_host="10.129.35.32"
 
-hub_port = 8887
-proxy_port = 9799
+hub_port = 8000
+proxy_port = 9800
+
 
 print('current_host = %s' % current_host)
 
@@ -23,6 +24,7 @@ c.JupyterHub.hub_ip = current_host
 c.JupyterHub.hub_port = hub_port
 c.JupyterHub.bind_url = 'http://%s:%s' % (c.JupyterHub.hub_ip,c.JupyterHub.hub_port)
 c.JupyterHub.hub_bind_url = 'http://%s:%s' % (current_host,proxy_port)
+c.ConfigurableHTTPProxy.api_url = 'http://%s:%s' % (current_host,proxy_port)
 
 c.Spawner.debug  = False
 
