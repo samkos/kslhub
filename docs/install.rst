@@ -46,7 +46,7 @@ A fully configured ready to set container can be downloaded from
 (https://cloud.docker.com/repository/docker/samkos/kslhub_slurm)
 via the command::
 
-  $ docker run -t -i -h kslhub  -t -i -p 8000:8000 -p 33333:22 samkos/kslhub_slurm
+  $ docker run -t -i -h kslhub  -t -i -p 8000:8000 -p 33333:22 samkos/kslhub
 
 It will run a container with kslhub installed along with a slurm
 cluster of 5 nodes. 3 users are already exiting in this container:
@@ -54,20 +54,11 @@ cluster of 5 nodes. 3 users are already exiting in this container:
 respective name. 
 
 *hub* is the user having *kslhub* already installed and preconfigured
-in the directory */home/hub/kslhub/*. He has the responsability to
-launch the hub::
-
-  $ cd kslhub
-  $ kslhub -f docker_slurm
-
-In this configuration, *kslhub*  responds on port 8000 of your localhost (thanks to the port
+in the directory */home/hub/*. When the container run the hub automatically
+starts and responds on port 8000 of your localhost (thanks to the port
 mapping * *docker run -p 8000:8000*), and one can connect to
 the container via *ssh*, available on port 33333 of your localhost
 (thanks to the port mapping * *docker run ... -p 33333:22*)
-
-
-
-
 
 
 

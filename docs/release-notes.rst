@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+0.0.16 (Apr 14, 2019)
+-------------------
+   * setting USER environment variable preventing the hub to connect
+     with note book under some environment. (version of slurm)
+   * in the docker container, under user hub, connection of the hub is
+     ok with the notebook. Still problem to launch python or bash
+   * in the container the hub is now installed in /home/hub instead of
+     /home/hub/kslhub as previously
+
+
 0.0.15 (Apr 13, 2019)
 -------------------
    * bug fixing

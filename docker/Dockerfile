@@ -125,7 +125,7 @@ ENTRYPOINT \
 ## /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
     /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
     && gosu hub git pull \
-    && gosu hub bash ./scripts/Debug_here.sh \
+    && gosu hub bash ./scripts/Update_to_latest.sh \
     && /configure_mysql.sh mysqld \
     && gosu munge /usr/sbin/munged \
     && /usr/sbin/sshd \
