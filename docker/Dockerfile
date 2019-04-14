@@ -88,9 +88,6 @@ RUN echo alice:alice | chpasswd
 RUN chsh -s /bin/bash alice && chsh -s /bin/bash bob && chsh -s /bin/bash hub
 RUN mkdir -p /home/mysql && chown -R mysql    /home/mysql 
 
-COPY slurm.conf /etc/slurm/slurm.conf
-COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
-
 EXPOSE 8000
 EXPOSE 22
 
@@ -121,8 +118,11 @@ RUN chown -R hub.users /home/hub \
     && gosu hub bash  ./dev/Install_here_debug.sh
 
 
+COPY slurm.conf /etc/slurm/slurm.conf
+COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
-    && /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
+    ##&& /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
     && /configure_mysql.sh mysqld \
     && gosu munge /usr/sbin/munged \
     && /usr/sbin/sshd \
@@ -130,16 +130,17 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && slurmdbd \
     && echo waiting for slurmdbd to connect to mysql \
     && sleep 5 \
-    && sacctmgr -i add cluster sk \
-    && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
-    && sacctmgr -i add user hub,alice,bob Account=main \
-    && /usr/sbin/slurmctld \
+    #&& slurmd \
     && slurmd -N c1 \
     && slurmd -N c2  \
     && slurmd -N c3  \
     && slurmd -N c4  \
     && slurmd -N c5  \	    
+    && sacctmgr -i add cluster sk \
+    && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
+    && sacctmgr -i add user hub,alice,bob Account=main \
+    && /usr/sbin/slurmctld \
     && echo sleeping for 10000s \
-    &&  exec sleep 10000
-#   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f sk'
+    #&&  exec sleep 10000
+    && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f sk'
 
