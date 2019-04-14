@@ -101,28 +101,24 @@ RUN chmod +x /configure_mysql.sh
 
 
 
-# WORKDIR /home/hub
+WORKDIR /home/hub
 
-# RUN gosu hub git clone https://github.com/samkos/kslhub.git .
+RUN gosu hub git clone https://github.com/samkos/kslhub.git .
 
-# COPY Install_here_debug.sh /home/hub/scripts/Install_here.sh
-
-
-# RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
-#     && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
-#     && gosu alice mkdir -p /home/alice/NOTEBOOKS 
+COPY Install_here_debug.sh /home/hub/scripts/Install_here.sh
 
 
+RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
+    && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
+    && gosu alice mkdir -p /home/alice/NOTEBOOKS 
 
 
-# WORKDIR /home/hub
 
-# RUN chown -R hub.users /home/hub \
-#     && gosu hub bash  ./dev/Install_here_debug.sh
 
-# #scripts/Install_here.sh
-    
-#CMD /configure_mysql.sh mysqld
+WORKDIR /home/hub
+
+RUN chown -R hub.users /home/hub \
+    && gosu hub bash  ./dev/Install_here_debug.sh
 
 
 ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
