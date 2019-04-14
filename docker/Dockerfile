@@ -1,7 +1,7 @@
-## MySQL 5.6 with slurm cluster
+# MySQL 5.6 with slurm cluster
  
 ## Pull the mysql:5.6 image
-FROM mysql8_for_slurm
+FROM mysql:5.6
  
 ## The maintainer name and email
 MAINTAINER Samuel Kortas
@@ -15,6 +15,22 @@ ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev mun
 
 RUN  apt-get update && \
     apt-get install -y $PACKAGE
+
+
+
+
+
+
+# Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
+RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections \
+    && echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections \
+    && apt-get -y install mysql-server 
+    
+COPY configure_mysql.sh /configure_mysql.sh
+RUN chmod +x /configure_mysql.sh
+
+
+  
 
 ARG SLURM_VERSION=17.02.11
 ARG SLURM_DOWNLOAD_MD5=b32f4260a921d335a2d52950593f0a29
@@ -56,16 +72,15 @@ RUN cd \
         /var/lib/slurmd/assoc_mgr_state \
         /var/lib/slurmd/assoc_usage \
         /var/lib/slurmd/qos_usage \
-        /var/lib/slurmd/fed_mgr_state \
-    && chown -R slurm:slurm /var/*/slurm*
+        /var/lib/slurmd/fed_mgr_state 
 
 
 RUN /usr/bin/ssh-keygen -A
 
 
-### RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
-###     && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
-###     && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
+RUN useradd  -r -g users --uid=1010 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
+    && useradd -r -g users --uid=1011 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
+    && useradd -r -g users --uid=1012 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
 
 RUN echo hub:hub | chpasswd 
 RUN echo bob:bob | chpasswd 
@@ -84,36 +99,37 @@ RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
 COPY configure_mysql.sh /configure_mysql.sh
 RUN chmod +x /configure_mysql.sh
 
-CMD mysqld
 
 
-WORKDIR /home/hub
+# WORKDIR /home/hub
 
-RUN gosu hub git clone https://github.com/samkos/kslhub.git 
+# RUN gosu hub git clone https://github.com/samkos/kslhub.git .
 
-COPY Install_here_debug.sh /home/hub/kslhub/scripts/Install_here.sh
-
-WORKDIR /home/hub/kslhub
-
-RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./scripts/Install_here.sh
+# COPY Install_here_debug.sh /home/hub/scripts/Install_here.sh
 
 
-
-### RUN /usr/bin/ssh-keygen -A
-
-
-### RUN cat /home/hub/kslhub/kslhub_init_env.sh >> /home/hub/.bashrc \
-###     && echo . /home/hub/.bashrc > /home/hub/.profile
-
-### RUN chown -R hub.users /home/hub/.bashrc /home/hub/.profile 
+# RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
+#     && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
+#     && gosu alice mkdir -p /home/alice/NOTEBOOKS 
 
 
 
-ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
+
+# WORKDIR /home/hub
+
+# RUN chown -R hub.users /home/hub \
+#     && gosu hub bash  ./dev/Install_here_debug.sh
+
+# #scripts/Install_here.sh
+    
+#CMD /configure_mysql.sh mysqld
+
+
+ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts" \
+    && /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "\
+    && /configure_mysql.sh mysqld \
     && gosu munge /usr/sbin/munged \
     && /usr/sbin/sshd \
-    && /configure_mysql.sh mysqld \
     && service mysql start \
     && slurmdbd \
     && echo waiting for slurmdbd to connect to mysql \

@@ -56,28 +56,24 @@ RUN cd \
         /var/lib/slurmd/assoc_mgr_state \
         /var/lib/slurmd/assoc_usage \
         /var/lib/slurmd/qos_usage \
-        /var/lib/slurmd/fed_mgr_state \
-    && chown -R slurm:slurm /var/*/slurm*
+        /var/lib/slurmd/fed_mgr_state 
+
 
 
 RUN /usr/bin/ssh-keygen -A
 
 
-### RUN useradd  -r -g users --uid=1001 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
-###     && useradd -r -g users --uid=1002 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
-###     && useradd -r -g users --uid=1003 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
-
-RUN echo hub:hub | chpasswd 
-RUN echo bob:bob | chpasswd 
-RUN echo alice:alice | chpasswd 
-RUN chsh -s /bin/bash alice && chsh -s /bin/bash bob && chsh -s /bin/bash hub
-RUN mkdir -p /home/mysql && chown -R mysql    /home/mysql 
+RUN  useradd -s /bin/bash -r -g users --uid=1002 bob \
+     && mkdir -p /home/bob && chown -R bob.users /home/bob \
+     && useradd -s /bin/bash -r -g users --uid=1003 alice \
+     && mkdir -p /home/alice && chown -R alice.users /home/alice \
+     && echo bob:bob | chpasswd  \
+     && echo alice:alice | chpasswd \
+     && mkdir -p /home/mysql && chown -R mysql    /home/mysql 
 
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 
-EXPOSE 8000
-EXPOSE 22
 RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
 
 COPY configure_mysql.sh /configure_mysql.sh
@@ -85,7 +81,8 @@ COPY configure_mysql.sh /configure_mysql.sh
 RUN chmod +x /configure_mysql.sh
 
 
-#ENTRYPOINT /configure_mysql.sh mysqld
+EXPOSE 8000
+EXPOSE 22
 
 CMD mysqld
 
@@ -106,9 +103,4 @@ ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'
     && slurmd -N c3  \
     && slurmd -N c4  \
     && slurmd -N c5  \	    
-    && echo sleeping for 10000s \
-     &&  exec sleep 10000
-#   && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_slurm'
-    ### && sacctmgr -i add cluster sk \
-    ### && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
-    ### && sacctmgr -i add user hub,alice,bob Account=main 
+    && echo sleeping for 10000s 
