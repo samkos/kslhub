@@ -53,6 +53,7 @@ def get_data_files():
     data_files = data_files + \
                  [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py',
                                                          'jupyterhub/jupyterhub/spawner.py' ]), \
+                   ("%s/jupyterhub/services" % site_packages_dir, ['jupyterhub/jupyterhub/services/auth.py']), \
                    ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
                    ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
                                             'jupyterhub/jupyterhub/handlers/pages.py'])]

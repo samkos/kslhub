@@ -1,7 +1,12 @@
 Release Notes
 =============
 
-0.0.16 (Apr 14, 2019)
+0.0.18 & 0.0.19 (Apr 15, 2019)
+-------------------
+   * currently fixing authentication problem
+    
+
+0.0.17 (Apr 14, 2019)
 -------------------
    * overwitting jupyterhub/spawner.py to prevent the setting of CONDA_DEFAULT_ENV
      environment variable... to be fixed later... BAAAAAAAAAAAAAAD

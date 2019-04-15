@@ -135,11 +135,20 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 * install in docker
 
 docker build -t kslhub .
-#docker build -t kslhub -f Dockerfile.debug
 dk kslhub
 dc rm kslhub
 docker run --name kslhub -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub 
 
+docker build -t kslhub_prod .
+dc rm test
+docker run --name test -h kslhub  -t -i -p 8000:8000 -p 33334:22 kslhub_prod
+
+
+docker build -t kslhub-debug -f Dockerfile.debug .
+dk debug
+dc rm debug
+docker run --name  debug -h kslhub  -t -i -p 8000:8000 -p 33335:22 kslhub-debug 
+inside   kslhub -f docker_prod
 
 ** conda container
 docker run -t -i -d -p 9003:9000 --name conda continuumio/anaconda3
@@ -363,6 +372,10 @@ make html
 * troubleshooting
 ** user not defined
 comes from USER environment variable undefined....
+
+Authentication problem migjt be linked with the fact that we are running not in debug mode
+
+
 
 * testing
 
