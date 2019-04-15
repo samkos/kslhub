@@ -51,7 +51,8 @@ def get_data_files():
     site_packages_dir = "lib/python%d.%d/site-packages" % (sys.version_info[0],sys.version_info[1])
     
     data_files = data_files + \
-                 [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py']), \
+                 [ ("%s/jupyterhub" % site_packages_dir,['jupyterhub/jupyterhub/orm.py',
+                                                         'jupyterhub/jupyterhub/spawner.py' ]), \
                    ("%s/jupyterhub/oauth" % site_packages_dir, ['jupyterhub/jupyterhub/oauth/provider.py']), \
                    ('%s/jupyterhub/handlers' % site_packages_dir, ['jupyterhub/jupyterhub/handlers/login.py',
                                             'jupyterhub/jupyterhub/handlers/pages.py'])]

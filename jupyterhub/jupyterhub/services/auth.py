@@ -307,8 +307,6 @@ class HubAuth(SingletonConfigurable):
             if self.client_ca:
                 kwargs["verify"] = self.client_ca
         try:
-            #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-            print("[CHECKKKKKKKKKKKKKKK method=/%s/ url=/%s/ " % (method,url))
             r = requests.request(method, url, **kwargs)
         except requests.ConnectionError as e:
             app_log.error("Error connecting to %s: %s", self.api_url, e)

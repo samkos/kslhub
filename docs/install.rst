@@ -169,11 +169,11 @@ the most updated  version from the repository::
 Building a local docker image
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The docker image available from *docker hub* as *samkos/kslhub_slurm* can be obtained
+The docker image available from *docker hub* as *samkos/kslhub* can be obtained
 from the source by issuing the following commands::
 
    $ cd docker
-   $ docker build -t kslhub_slurm -f Dockerfile_kslhub_slurm .
+   $ docker build -t kslhub  .
 
 
     

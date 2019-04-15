@@ -167,6 +167,6 @@ ENTRYPOINT \
     && cron \
     # && for node in c1 c2 c3 c4 c5; do scontrol update NodeName=$node state=RESUME; done \
     && echo sleeping for 10000s \
-    #&&  exec sleep 10000
-    && exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_prod'
+    &&  exec sleep 36000
+    #&& exec gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_prod'
 

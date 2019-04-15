@@ -3,6 +3,11 @@ Release Notes
 
 0.0.16 (Apr 14, 2019)
 -------------------
+   * overwitting jupyterhub/spawner.py to prevent the setting of CONDA_DEFAULT_ENV
+     environment variable... to be fixed later... BAAAAAAAAAAAAAAD
+
+0.0.16 (Apr 14, 2019)
+-------------------
    * setting USER environment variable preventing the hub to connect
      with note book under some environment. (version of slurm)
    * in the docker container, under user hub, connection of the hub is

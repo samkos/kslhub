@@ -135,7 +135,10 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 * install in docker
 
 docker build -t kslhub .
-docker run -h kslhub kslhub 
+#docker build -t kslhub -f Dockerfile.debug
+dk kslhub
+dc rm kslhub
+docker run --name kslhub -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub 
 
 
 ** conda container
