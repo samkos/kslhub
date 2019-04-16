@@ -140,14 +140,17 @@ dc rm kslhub
 docker run --name kslhub -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub 
 
 docker build -t kslhub_prod .
-dc rm test
-docker run --name test -h kslhub  -t -i -p 8000:8000 -p 33334:22 kslhub_prod
+dk prod
+dc rm prod
+docker run --name prod -h kslhub  -t -i -p 7000:8000 -p 33334:22 kslhub_prod
+
 
 
 docker build -t kslhub-debug -f Dockerfile.debug .
 dk debug
 dc rm debug
-docker run --name  debug -h kslhub  -t -i -p 8000:8000 -p 33335:22 kslhub-debug 
+docker run --name  debug -h kslhub  -t -i -p 9009:8000 -p 33335:22 kslhub-debug 
+
 inside   kslhub -f docker_prod
 
 ** conda container
