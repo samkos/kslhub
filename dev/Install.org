@@ -148,7 +148,8 @@ dk kslhub
 docker build -t kslhub .
  dk kslhub
 dc rm kslhub
-docker run --name kslhub -h kslhub  -d -p 7000:8000 -p 33333:22 kslhub 
+docker run --name kslhub -h kslhub  -d -p 10.68.58.171:7000:8000 -p 33333:22 kslhub 
+#docker run --name kslhub -h kslhub  -d -p 7007:8000 -p 33333:22 samkos/kslhub
 d logs -f kslhub
 dct kslhub samkos/kslhub
 docker login
@@ -179,6 +180,7 @@ dk kslhub
 dc rm kslhub
 docker run --name kslhub -h kslhub  -d -p 8000:8000 -p 33333:22 samkos/kslhub
 d logs -f  kslhub
+
 
 de do500
 docker pull samkos/kslhub
@@ -421,6 +423,11 @@ comes from USER environment variable undefined....
 
 Authentication problem migjt be linked with the fact that we are running not in debug mode
 
+** shell not connecting in jupyterlab
+could come from a wrong mapping of the container hub  wusing localhost instead of public address of the host
+
+** problem to run as another user
+directory /home/hun/.jupyter/migrated has to be created and chmod 777
 
 * todo/to check
 ** tuning of jupyterlab
