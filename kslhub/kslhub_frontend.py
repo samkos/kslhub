@@ -77,8 +77,8 @@ def start():
       
     if not(os.path.exists("jobs")):
       cmd = """
-         mkdir -p jobs logs runtime ~/.jupyter/migrated /home/hub/.local/share/jupyter /home/hub/.jupyter/lab
-         chmod 777 jobs logs runtime ~/.jupyter/migrated /home/hub/.local/share/jupyter /home/hub/.jupyter/lab
+         mkdir -p jobs logs runtime ~/.jupyter/migrated ~/.local/share/jupyter ~/.jupyter/lab
+         chmod 777 jobs logs runtime ~/.jupyter/migrated ~/.local/share/jupyter ~/.jupyter/lab
       """
       os.system(cmd)
       print("creating working directory jobs, runtime and logs")
