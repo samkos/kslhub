@@ -134,16 +134,33 @@ pip install -i https://test.pypi.org/simple -i https://pypi.org/simple kslhub==0
 
 * install in docker
 
-docker build -t kslhub .
+
+
+docker build -t kslhub -f Dockerfile_slurm_mysql .
+dk slurm
+dc rm slurm
+docker run --name slurm  -h kslhub  -d -p 7000:8000 -p 33333:22 slurm
+d logs -f slurm
+dct kslhub samkos/slurm
+
+
 dk kslhub
+docker build -t kslhub .
+ dk kslhub
 dc rm kslhub
-docker run --name kslhub -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub 
+docker run --name kslhub -h kslhub  -d -p 7000:8000 -p 33333:22 kslhub 
+d logs -f kslhub
+dct kslhub samkos/kslhub
+docker login
+docker push samkos/kslhub
+
+dk kslhub
 
 docker build -t kslhub_prod .
 dk prod
 dc rm prod
-docker run --name prod -h kslhub  -t -i -p 7000:8000 -p 33334:22 kslhub_prod
-
+docker run --name prod -h kslhub  -d -p 8000:8000 -p 33334:22 kslhub_prod
+d logs -f  prod
 
 
 docker build -t kslhub-debug -f Dockerfile.debug .
@@ -152,6 +169,27 @@ dc rm debug
 docker run --name  debug -h kslhub  -t -i -p 9009:8000 -p 33335:22 kslhub-debug 
 
 inside   kslhub -f docker_prod
+
+
+on do
+
+de do500
+docker pull samkos/kslhub
+dk kslhub
+dc rm kslhub
+docker run --name kslhub -h kslhub  -d -p 8000:8000 -p 33333:22 samkos/kslhub
+d logs -f  kslhub
+
+de do500
+docker pull samkos/kslhub
+docker build -t kslhub_prod .
+dk prod
+dc rm prod
+docker run --name prod -h kslhub  -d -p 000:8000 -p 33334:22 prod
+d logs -f  prod
+
+
+
 
 ** conda container
 docker run -t -i -d -p 9003:9000 --name conda continuumio/anaconda3
@@ -225,14 +263,19 @@ docker run -h kslhub  -t -i -p 8000:8000 -p 33333:22 kslhub_slurm_mysql
 docker run -h -t -i kslhub mysql_for_slurm bash
 
 db mysql
-mysql -u slurm -ppassword slurm_acct_db@kslhub
+mysql -u root -ppassword slurm_acct_db
 
 mysql -u root -pmypassword
+mysql
+CREATE DATABASE IF NOT EXISTS  slurm_acct_db;
+SHOW DATABASES;
 SHOW GRANTS FOR 'root'@'localhost';
 SHOW GRANTS FOR 'slurm'@'localhost';
-GRANT ALL PRIVILEGES ON `slurm_acct_db`.* TO 'slurm'@'kslhub';
+GRANT ALL PRIVILEGES ON `slurm_acct_db`.* TO root'@'localhost;
 SHOW GRANTS FOR 'slurm'@'kslhub';
-GRANT ALL PRIVILEGES ON *.* TO 'slurm'@'kslhub' IDENTIFIED BY 'password' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON slurm_acct_db.* TO 'slurm'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'mypassword' WITH GRANT OPTION;
+FLUSH PRIVILEGES ;
 
 ** run on container
 ssh hub
@@ -379,6 +422,14 @@ comes from USER environment variable undefined....
 Authentication problem migjt be linked with the fact that we are running not in debug mode
 
 
+* todo/to check
+** tuning of jupyterlab
+> node /home/hub/kslhub_conda_env/lib/python3.7/site-packages/jupyterlab/staging/yarn.js install
+yarn install v1.9.4
+info No lockfile found.
+[1/5] Validating package.json...
+[2/5] Resolving packages...
+warning @jupyterlab/application > @jupyterlab/apputils > react > fbjs > core-js@1.2.7: core-js@<2.6.5 is no longer maintained. Please, upgrade to core-js@3 or at least to actual version of core-js@2.
 
 * testing
 

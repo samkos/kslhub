@@ -1,7 +1,7 @@
-## MySQL 5.6 with slurm cluster
+# MySQL 5.6 with slurm cluster
  
 ## Pull the mysql:5.6 image
-FROM mysql8_for_slurm
+FROM mysql:5.6
  
 ## The maintainer name and email
 MAINTAINER Samuel Kortas
@@ -15,6 +15,22 @@ ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev mun
 
 RUN  apt-get update && \
     apt-get install -y $PACKAGE
+
+
+
+
+
+
+# Install MySQL Server in a Non-Interactive mode. Default root password will be "root"
+RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections \
+    && echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections \
+    && apt-get -y install mysql-server 
+    
+COPY configure_mysql.sh /configure_mysql.sh
+RUN chmod +x /configure_mysql.sh
+
+
+  
 
 ARG SLURM_VERSION=17.02.11
 ARG SLURM_DOWNLOAD_MD5=b32f4260a921d335a2d52950593f0a29
@@ -59,48 +75,58 @@ RUN cd \
         /var/lib/slurmd/fed_mgr_state 
 
 
-
 RUN /usr/bin/ssh-keygen -A
 
 
-RUN  useradd -s /bin/bash -r -g users --uid=1002 bob \
-     && mkdir -p /home/bob && chown -R bob.users /home/bob \
-     && useradd -s /bin/bash -r -g users --uid=1003 alice \
-     && mkdir -p /home/alice && chown -R alice.users /home/alice \
-     && echo bob:bob | chpasswd  \
-     && echo alice:alice | chpasswd \
-     && mkdir -p /home/mysql && chown -R mysql    /home/mysql 
+RUN useradd  -r -g users --uid=1010 hub && mkdir -p /home/hub && chown -R hub.users /home/hub \
+    && useradd -r -g users --uid=1011 bob && mkdir -p /home/bob && chown -R bob.users /home/bob \
+    && useradd -r -g users --uid=1012 alice && mkdir -p /home/alice && chown -R alice.users /home/alice
 
-COPY slurm.conf /etc/slurm/slurm.conf
-COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
-
-RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
-
-COPY configure_mysql.sh /configure_mysql.sh
-
-RUN chmod +x /configure_mysql.sh
-
+RUN echo hub:hub | chpasswd 
+RUN echo bob:bob | chpasswd 
+RUN echo alice:alice | chpasswd 
+RUN chsh -s /bin/bash alice && chsh -s /bin/bash bob && chsh -s /bin/bash hub
+RUN mkdir -p /home/mysql && chown -R mysql    /home/mysql 
 
 EXPOSE 8000
 EXPOSE 22
 
-CMD mysqld
+RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
 
-ENTRYPOINT /bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/'` >> /etc/hosts" \
-    && gosu munge /usr/sbin/munged \
-    && /usr/sbin/sshd \
-    && /configure_mysql.sh mysqld \
-    && service mysql start \
-    && slurmdbd \
-    && echo waiting for slurmdbd to connect to mysql \
-    && sleep 5 \
-    && sacctmgr -i add cluster sk \
-    && sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" \
-    && sacctmgr -i add user hub,alice,bob Account=main \
-    && /usr/sbin/slurmctld \
-    && slurmd -N c1 \
-    && slurmd -N c2  \
-    && slurmd -N c3  \
-    && slurmd -N c4  \
-    && slurmd -N c5  \	    
-    && echo sleeping for 10000s 
+COPY configure_mysql.sh /configure_mysql.sh
+RUN chmod +x /configure_mysql.sh
+
+
+
+
+
+RUN apt-get update && apt-get -y install cron
+
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/hello-cron
+
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/hello-cron
+
+# Apply cron job
+RUN crontab /etc/cron.d/hello-cron
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+
+
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log
+
+COPY slurm.conf /etc/slurm/slurm.conf
+COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+
+
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+EXPOSE 9799
+
+ENTRYPOINT /start.sh

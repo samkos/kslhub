@@ -8,7 +8,10 @@ MAINTAINER Samuel Kortas
 
 
 ## List all packages that we want to install
-ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev munge libmunge-dev openssh-server vim
+ENV PACKAGE wget gcc g++ bzip2 git make libmysqlclient-dev python python-dev munge libmunge-dev \\
+     openssh-server vim cron
+
+
  
  
 # Install all packages
@@ -26,13 +29,7 @@ RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-s
     && echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections \
     && apt-get -y install mysql-server 
     
-COPY configure_mysql.sh /configure_mysql.sh
-RUN chmod +x /configure_mysql.sh
 
-
-  
-
-ARG SLURM_VERSION=17.02.11
 ARG SLURM_DOWNLOAD_MD5=b32f4260a921d335a2d52950593f0a29
 ARG SLURM_DOWNLOAD_URL=https://download.schedmd.com/slurm/slurm-17.02.11.tar.bz2
 
@@ -93,28 +90,6 @@ EXPOSE 22
 
 RUN   mkdir -p /var/run/munge /run/sshd && chown munge.munge /var/run/munge
 
-COPY configure_mysql.sh /configure_mysql.sh
-RUN chmod +x /configure_mysql.sh
-
-
-
-WORKDIR /home/hub
-
-RUN gosu hub git clone https://github.com/samkos/kslhub.git .
-
-COPY Install_here_debug.sh /home/hub/scripts/Install_here.sh
-
-
-RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
-    && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
-    && gosu alice mkdir -p /home/alice/NOTEBOOKS 
-
-
-RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./dev/Install_here_debug.sh
-
-
-RUN apt-get update && apt-get -y install cron
 
 # Add crontab file in the cron directory
 ADD crontab /etc/cron.d/hello-cron
@@ -134,12 +109,32 @@ RUN touch /var/log/cron.log
 # Run the command on container startup
 CMD cron && tail -f /var/log/cron.log
 
-COPY slurm_hope.conf /etc/slurm/slurm.conf
+COPY configure_mysql.sh /configure_mysql.sh 
+RUN  chmod +x /configure_mysql.sh  &&  /configure_mysql.sh mysqld
+
+COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 
 
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
 
+WORKDIR /home/hub
+
+RUN gosu hub git clone https://github.com/samkos/kslhub.git .
+
+
+RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
+    && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
+    && gosu alice mkdir -p /home/alice/NOTEBOOKS 
+
+
+RUN chown -R hub.users /home/hub \
+    && gosu hub bash  ./dev/Install_here_debug.sh
+
+
+
+
+COPY start.sh /start.sh
+
+RUN chmod +x /start.sh
 
 ENTRYPOINT /start.sh

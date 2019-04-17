@@ -1,23 +1,35 @@
 ##/bin/sh -c "echo `tail -1 /etc/hosts | sed 's/kslhub/c1 c2 c3 c4 c5/' ` >> /etc/hosts"
-echo ======================================================
-echo Setting up /etc/hosts file
-echo ======================================================
-/bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c4 >> /etc/hosts "
-
-if [ ${SLURM_ALL} ] || [ ${MYSQL} ]; then
+if [ -z ${SLURM_CLUSTER} ] ; then
 
     echo ======================================================
-    echo intializing MYSQL
+    echo Setting up /etc/hosts file
     echo ======================================================
+    /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c5 mysql >> /etc/hosts "
 
-    /configure_mysql.sh mysqld 
     gosu munge /usr/sbin/munged 
     /usr/sbin/sshd 
+
+fi
+
+if [ -z ${SLURM_CLUSTER} ] || [ ${MYSQL} ]; then
+
+    echo ======================================================
+    echo starting MYSQLd
+    echo ======================================================
     service mysql start
+
+    echo "CREATE DATABASE IF NOT EXISTS slurm_acct_db;" | mysql
+
+    echo "CREATE USER 'slurm'@'%' IDENTIFIED BY 'passwd' ;" | mysql
+
+    echo "GRANT ALL PRIVILEGES ON slurm_acct_db.* TO 'slurm'@'127.0.0.1' IDENTIFIED BY 'password' WITH GRANT OPTION;" | mysql
+    echo 'FLUSH PRIVILEGES ;' | mysql
+    #echo "SHOW GRANTS FOR 'slurm'@'127.0.0.1';" |  mysql
+
 fi
 
 
-if  [ ${SLURM_ALL} ] ||  [ ${SLURM_MYSQL} ]; then
+if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_DB} ]; then
     echo ======================================================
     echo starting slurmdbd
     echo ======================================================
@@ -26,9 +38,9 @@ if  [ ${SLURM_ALL} ] ||  [ ${SLURM_MYSQL} ]; then
     sleep 5 
 fi
 
-if  [ ${SLURM_ALL} ] ||  [ ${SLURM_D} ]; then
+if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_D} ]; then
     echo ======================================================
-    echo starting slurm nodes
+    echo starting slurm nodes c1
     echo ======================================================
     
     slurmd -N c1 
@@ -38,7 +50,7 @@ if  [ ${SLURM_ALL} ] ||  [ ${SLURM_D} ]; then
     slurmd -N c5
 fi
 
-if  [ ${SLURM_ALL} ] ||  [ ${SLURM_CTLD} ]; then
+if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_CTLD} ]; then
     echo ======================================================
     echo setting up slurm cluster and starting slurm controller 
     echo ======================================================
@@ -54,7 +66,7 @@ if  [ ${SLURM_ALL} ]; then
     for node in c1 c2 c3 c4 c5; do scontrol update NodeName=$node state=RESUME; done 
 fi
 
-if  [ ${SLURM_ALL} ] ||  [ ${KSLHUB} ]; then
+if  [ -z ${SLURM_CLUSTER} ] ||  [ ${KSLHUB} ]; then
     echo ======================================================
     echo starting kslhub
     echo ======================================================
