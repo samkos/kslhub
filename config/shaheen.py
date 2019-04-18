@@ -23,7 +23,7 @@ c.JupyterHub.hub_port = hub_port
 c.JupyterHub.bind_url = 'http://%s:%s' % (c.JupyterHub.hub_ip,c.JupyterHub.hub_port)
 c.JupyterHub.hub_bind_url = 'http://%s:%s' % (current_host,proxy_port)
 
-c.Spawner.debug  = True
+c.Spawner.debug  = False
 
 c.Authenticator.otp_required = False 
 c.Authenticator.host = 'cdl2'
