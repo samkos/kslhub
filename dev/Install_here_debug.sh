@@ -65,6 +65,21 @@ else
     conda create -y -p $CONDA_DIR pip python=3.7 
     source activate  $CONDA_DIR 
     conda install -y -c  conda-forge/label/cf201901 configurable-http-proxy==3.1.0 nodejs==8.10 
+
+    # basic r
+    conda install -c r r-essentials  -y
+
+    # install iRnoteboook suppport (direct version not working yet)
+    R << EOF
+    install.packages('IRkernel')
+    install.packages('IRdisplay')
+    q()
+    n
+    EOF
+
+    pip install mimesis
+
+
 fi
 
 
@@ -88,8 +103,8 @@ then
     fi
     
 else
-        echo Instlalling kslhub from the last version available in pypi.org
-    pip install kslhub 
+    echo Instlalling kslhub from the last version available in pypi.org
+    pip install kslhub
 fi
 
 echo KSLHUB Installation Step 2.1: configuration of kslhub
