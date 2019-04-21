@@ -4,8 +4,13 @@ if [ -e ./kslhub_init_env.sh ]
 then
     . ./kslhub_init_env.sh
 
-    GIT_DIR=$PWD
-
+    if [ -z ${SRC_DIR} ]; then
+	GIT_DIR=$PWD
+    else
+	echo forcing link to ${SRC_DIR}
+	GIT_DIR=${SRC_DIR}
+    fi
+	
     echo reinstalling to be sure everything is fine
 
     \rm -rf $CONDA_DIR/lib/python3.7/site-packages/jupyterhub*

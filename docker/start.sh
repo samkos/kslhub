@@ -87,12 +87,48 @@ if  [ -z ${SLURM_CLUSTER} ] ||  [ ${KSLHUB} ]; then
 	gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_prod'
 	
     else
-	gosu hub git pull origin dev && git log | head -12
-	gosu hub bash ./scripts/Debug_here.sh
+
+	# if both not set we do not need to do anything
+	if [ -z "${HOST_USER_ID}" -a -z "${HOST_USER_GID}" ]; then
+	    echo "Nothing to do here to match user_id/group_id inside and outside container"
+	else
+	    # echo sjo
+	    # echo "${HOST_USER}:x:${HOST_USER_ID}:${HOST_USER_GID}:,,,:/home/${HOST_USER}:/bin/bash" >> /etc/passwd
+
+	    
+	    USER_MAPPED=hub
+	    
+	    # reset user_?id to either new id or if empty old (still one of above
+	    # might not be set)
+	    USER_ID=${HOST_USER_ID:=$USER_ID}
+	    USER_GID=${HOST_USER_GID:=$USER_GID}
+	
+	    # LINE=$(grep -F "${USER_MAPPED}" /etc/passwd)
+	    # # replace all ':' with a space and create array
+	    # array=( ${LINE//:/ } )
+	
+	    ## home is 5th element
+	    #USER_HOME=${array[4]}
+
+	    sed -i -e "s/^${USER_MAPPED}:\([^:]*\):[0-9]*:[0-9]*/${USER_MAPPED}:\1:${USER_ID}:${USER_GID}/"  /etc/passwd
+	    sed -i -e "s/^${USER_MAPPED}:\([^:]*\):[0-9]*/${USER_MAPPED}:\1:${USER_GID}/"  /etc/group
+
+	    mkdir -p ${HOST_KSLHUB_ROOT}
+	    rmdir ${HOST_KSLHUB_ROOT}
+	    ln -s /home/hub ${HOST_KSLHUB_ROOT}
+
+	    echo g-kortass:x:${USER_GID}: >> /etc/group
+	    
+	    echo ${USER_MAPPED} have been mapped to current host user $HOST_USER_ID:$HOST_USER_GID
+	    
+	    gosu hub bash ./scripts/Debug_here.sh
+
+	fi
 
 	echo ======================================================
-	echo up to you to start the hub.... on dev branch
+	echo up to you to start the hub.... on dev branch as yourself!!!
 	echo ======================================================
+
 
     fi
 fi

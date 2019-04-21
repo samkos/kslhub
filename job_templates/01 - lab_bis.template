@@ -10,4 +10,4 @@
 echo RUNNING on __nb_tasks__
 
 which jupyterhub-singleuser
-jupyterhub-singleuser --ip="0.0.0.0" --port=__NOTEBOOK_PORT__  --notebook-dir="/home/__USER__/NOTEBOOKS" --debug
+jupyter-labhub --ip="0.0.0.0" --port=__NOTEBOOK_PORT__  --notebook-dir="~/NOTEBOOKS" --debug

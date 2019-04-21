@@ -11,6 +11,8 @@ current_host="10.129.35.32"
 hub_port = 20030
 proxy_port = 20041
 
+print('current_host = %s' % current_host)
+
 
 c.Authenticator.admin_users = {"kortass"}
 
@@ -21,7 +23,7 @@ c.JupyterHub.hub_port = hub_port
 c.JupyterHub.bind_url = 'http://%s:%s' % (c.JupyterHub.hub_ip,c.JupyterHub.hub_port)
 c.JupyterHub.hub_bind_url = 'http://%s:%s' % (current_host,proxy_port)
 
-c.Spawner.debug  = False
+c.Spawner.debug  = True
 
 c.Authenticator.otp_required = False 
 c.Authenticator.host = 'cdl2'

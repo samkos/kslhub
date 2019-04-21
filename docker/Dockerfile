@@ -134,7 +134,8 @@ RUN chown -R hub.users /home/hub \
 
 
 COPY start.sh /start.sh
+COPY match_hub_userid.sh /match_hub_userid.sh
 
-RUN chmod +x /start.sh
+RUN chmod +x /start.sh /match_hub_userid.sh
 
 ENTRYPOINT /start.sh
