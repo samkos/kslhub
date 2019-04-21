@@ -1,5 +1,6 @@
 import re
 
+PARSE_DEBUG = False
 
 def build_time(tag,fields,case):
     tag_text = fields.pop(0)
@@ -86,7 +87,8 @@ def build_gui_from_template(job_file,case):
     l = ""
 
     for v in variables:
-        print(v)
+        if PARSE_DEBUG:
+            print(v)
 
         fields = v.split(";")
 

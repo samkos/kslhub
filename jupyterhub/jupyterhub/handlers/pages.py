@@ -190,7 +190,7 @@ class SpawnHandler(BaseHandler):
             form_options["%s_file"%key] = byte_list
         try:
             options = await maybe_future(user.spawner.options_from_form(form_options))
-            self.log.warning("options: %s" % pprint.pformat(form_options))
+            self.log.debug("options: %s" % pprint.pformat(form_options))
 
             await self.spawn_single_user(user, options=options)
         except Exception as e:

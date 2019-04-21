@@ -45,16 +45,17 @@ class session_manager(object):
             # self.actual_ssh = o['identityfile']
             
         except Exception as e:
-            print("ssh_authenticator.py : problem to read ssh config for machine %s" %\
-                  self.machine, " read from : %s" % \
-                  os.path.abspath(HOME)+'/.ssh/config')
-            try:
-                print("value read from .ssh/config : ",o)
-            except:
-                print("no value read from .ssh/config....")
-            print(e)
-            traceback.print_exc(file=sys.stdout)
-            print("setting same machine name and port to default ssh port")
+            if SSH_DEBUG:
+              print("ssh_authenticator.py : problem to read ssh config for machine %s" %\
+                    self.machine, " read from : %s" % \
+                    os.path.abspath(HOME)+'/.ssh/config')
+              try:
+                  print("value read from .ssh/config : ",o)
+              except:
+                  print("no value read from .ssh/config....")
+              print(e)
+              traceback.print_exc(file=sys.stdout)
+              print("setting same machine name and port to default ssh port")
             #sys.exit(1)
             self.actual_machine = machine
             self.actual_default_port = 22
@@ -209,4 +210,5 @@ sleep 10
     stdin.write(input)
     stdin.channel.shutdown_write()
     res = stdout.readlines()
-    print("[AUTHENT] res for cmd=|||%s||| = %s " %    (cmd,res))
+    if SSH_DEBUG:
+        print("[AUTHENT] res for cmd=|||%s||| = %s " %    (cmd,res))

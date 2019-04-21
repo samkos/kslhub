@@ -11,8 +11,6 @@ current_host="10.129.35.32"
 hub_port = 20030
 proxy_port = 20041
 
-print('current_host = %s' % current_host)
-
 
 c.Authenticator.admin_users = {"kortass"}
 

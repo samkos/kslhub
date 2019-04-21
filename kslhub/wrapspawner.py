@@ -20,6 +20,9 @@ Using this mechanism, the administrator can provide users with a pre-approved
 selection of Spawner configurations.
 """
 
+#SK DEBUG_WRAPSPAWNER
+DEBUG_WRAPSPAWNER = False
+
 import os
 import json
 import re
@@ -200,8 +203,9 @@ class ProfilesSpawner(WrapSpawner):
             if k[:4] == "dyn_":
                 a,input_,tag = k.split("_dyn_")
                 if input_==input:
-                    d["dyn_"+tag] = v[0]  
-        print("options_from_form=/%s/" % (pprint.pformat(d)))
+                    d["dyn_"+tag] = v[0]
+        if DEBUG_WRAPSPAWNER:
+            print("options_from_form=/%s/" % (pprint.pformat(d)))
         return d
 
     # load/get/clear : save/restore child_profile (and on load, use it to update child class/config)
@@ -240,5 +244,4 @@ class ProfilesSpawner(WrapSpawner):
         super().clear_state()
         self.child_profile = ''
 
-# vim: set ai expandtab softtabstop=4:
-
+# vim: set ai expandtab softtabstop=

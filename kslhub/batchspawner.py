@@ -34,7 +34,7 @@ from traitlets import (
     Instance, Integer, Unicode, Float, Dict
 )
 
-from kslhub.ssh_authenticator import session_manager
+from kslhub.ssh_authenticator import session_manager,SSH_DEBUG
 from jupyterhub import dbutil, orm
 from jupyterhub.app import JupyterHub
 from jupyterhub.spawner import Spawner
@@ -45,6 +45,7 @@ import xml.etree.ElementTree as ET
 from kslhub import scan_template
 import glob
 import re
+
 
 # add on to compute secret and token to be passed to the spawning job
 # import os
@@ -59,7 +60,8 @@ slurm_machine = session_manager()
 
 @gen.coroutine
 def run_command(cmd, input=None, env=None, user=None):
-    print("[AUTHENT] cmd run : |||%s||| " % cmd)
+    if SSH_DEBUG:
+        print("[AUTHENT] cmd run : |||%s||| " % cmd)
     #print("SKKKKKKKKKk env : |||%s||| " % pprint.pformat(env))
     #print("SKKKKKKKKKk cmd : |||%s||| " % pprint.pformat(cmd))
     #input_str = "|||%s||| " % pprint.pformat(input)
@@ -90,21 +92,25 @@ def run_command(cmd, input=None, env=None, user=None):
         
     stdin, stdout, stderr = connection.exec_command(cmd)
     if not(input==None):
-        print("sending input:/%s/" % input)
+        if SSH_DEBUG:
+            print("sending input:/%s/" % input)
         stdin.write("".join(input))
         stdin.channel.shutdown_write()
     else:
-        print("[AUTHENT] no input")
+        if SSH_DEBUG:
+            print("[AUTHENT] no input")
  
         
     output = stdout.readlines()
-    print("[AUTHENT] output for cmd=|||%s||| = %s " %    (cmd,output))
+    if SSH_DEBUG:
+        print("[AUTHENT] output for cmd=|||%s||| = %s " %    (cmd,output))
     try:
         res = output[-1][:-1]
     except:
         print("[AUTHENT] problem in parsing output. forcing res at nothing")
         res = ""
-    print("[AUTHENT] res for cmd=|||%s||| = %s " %    (cmd,res))
+    if SSH_DEBUG:
+        print("[AUTHENT] res for cmd=|||%s||| = %s " %    (cmd,res))
     return res
 
 
@@ -229,28 +235,28 @@ class BatchSpawnerBase(Spawner):
     def submit_batch_script(self):
         subvars = self.get_req_subvars()
         cmd = self.batch_submit_cmd.format(**subvars)
-        self.log.info("\nsubvars:%s\n" % pprint.pformat(subvars))
+        self.log.debug("\nsubvars:%s\n" % pprint.pformat(subvars))
         
         for v in subvars['keepvars'].split(","):
             if os.getenv(v):
                 subvars[v] = os.getenv(v)
 
-        self.log.info("\nsubvars after keepvar :%s\n" % pprint.pformat(subvars))
+        self.log.debug("\nsubvars after keepvar :%s\n" % pprint.pformat(subvars))
         
         #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
         template_directory = '%s/' % self.authenticator.job_template_dir
         template_to_find =  "%s/%s -*.template" % (template_directory,subvars['input'])
-        self.log.info('template_to_find: /%s/' % template_to_find)
+        self.log.debug('template_to_find: /%s/' % template_to_find)
 
         templates = glob.glob(template_to_find)
 
         template = templates[0]
 
-        self.log.info("template found %s" % template)
+        self.log.debug("template found %s" % template)
 
         script = "".join(open(template,"r").readlines())
         
-        self.log.info('template content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+        self.log.debug('template content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
 
         # replace all the __tag;...;..;;...__ and __tag__ pattern with the value
         # chosen in the GUI
@@ -260,10 +266,10 @@ class BatchSpawnerBase(Spawner):
             script = re.sub(r"__%s;.+__" % k , v, script)
             script = re.sub(r"__%s__" % k , v, script)
             
-        self.log.info('content after __tag__ replacememnt: \n' \
+        self.log.debug('content after __tag__ replacememnt: \n' \
                       + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
         
-        self.log.info('user_options: %s' % self.user_options)
+        self.log.debug('user_options: %s' % self.user_options)
 
 
         # initialize the keepvar environment variable
@@ -319,7 +325,7 @@ class BatchSpawnerBase(Spawner):
                 
 
         script = script_env_set
-        self.log.info('content after env addition: \n' \
+        self.log.debug('content after env addition: \n' \
                       + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
 
 
@@ -334,14 +340,14 @@ class BatchSpawnerBase(Spawner):
             loop.run_until_complete(hub.init_users())
         ThreadPoolExecutor(1).submit(init_users).result()
         user = orm.User.find(hub.db, self.user.name)
-        self.log.info("user : %s" % pprint.pformat(self.user))
+        self.log.debug("user : %s" % pprint.pformat(self.user))
         if user is None:
             self.log.info("No such user: %s" % self.user.name, file=sys.stderr)
             self.exit(1)
         token = user.new_api_token(note="command-line generated")
         print(token)
         
-        self.log.info("token = !!!%s!!! " % token)
+        self.log.debug("token = !!!%s!!! " % token)
 
         script = script.replace("__TOKEN__",token)
 
@@ -353,7 +359,7 @@ class BatchSpawnerBase(Spawner):
             .filter_by(identifier=client_id)
             .first()
         )
-        self.log.info("secret = !!!%s!!! " % oauth_client.secret)
+        self.log.debug("secret = !!!%s!!! " % oauth_client.secret)
 
         script = script.replace("__SECRET__", oauth_client.secret)
         script = script.replace("__USER__", self.user.name)
@@ -367,13 +373,13 @@ class BatchSpawnerBase(Spawner):
         script = script.replace("__JOB_DIR__", os.getenv("KSLHUB_ROOT",".")+"/jobs/")
         
 
-        self.log.info('content after token replacement: \n' \
+        self.log.debug('content after token replacement: \n' \
                       + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
 
         
         
         subvars['cmd'] = self.cmd_formatted_for_batch()
-        self.log.info("cmd formatted:%s" % subvars['cmd'])
+        self.log.debug("cmd formatted:%s" % subvars['cmd'])
         script = script.replace("__CONNECT__", subvars['cmd'])
         
         if hasattr(self, 'user_options'):
@@ -417,11 +423,12 @@ class BatchSpawnerBase(Spawner):
         f.close()
 
 
-        self.log.info('Job content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
+        self.log.debug('Job content: \n' + '='*80 + '\n' + script + '\n' + '='*80 + '\n')
         
         # self.log.info('Spawner modified script:\n' + script)
         #SKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKkkk
-        print("[AUTHENT] in submit_batch_script user: %s or |||%s|| ot type %s " %\
+        if SSH_DEBUG:
+            print("[AUTHENT] in submit_batch_script user: %s or |||%s|| ot type %s " %\
                   (self.user,pprint.pformat(self.user),type(self.user)))
 
         user = self.user

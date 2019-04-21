@@ -2271,7 +2271,6 @@ class JupyterHub(Application):
 
     @classmethod
     def launch_instance(cls, argv=None):
-        print("here")
         self = cls.instance()
         AsyncIOMainLoop().install()
         loop = IOLoop.current()
