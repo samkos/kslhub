@@ -75,18 +75,25 @@ if  [ -z ${SLURM_CLUSTER} ] ||  [ ${KSLHUB} ]; then
 	gosu hub git pull 
     fi
 
-    gosu hub git pull 
-    gosu hub bash ./scripts/Update_to_latest.sh 
-    gosu hub bash ./scripts/Debug_here.sh
+    if  [ -z ${DEV} ]; then
+	gosu hub git pull 
+	gosu hub bash ./scripts/Update_to_latest.sh 
+	gosu hub bash ./scripts/Debug_here.sh
 
-
-    if  [ -z ${DEBUG} ]; then
-	
 	echo ======================================================
-	echo running hub
+	echo running hub master branch
 	echo ======================================================
 
 	gosu hub bash -c '. ./kslhub_init_env.sh && kslhub -f docker_prod'
+	
+    else
+	gosu hub git pull origin dev && git log | head -12
+	gosu hub bash ./scripts/Debug_here.sh
+
+	echo ======================================================
+	echo up to you to start the hub.... on dev branch
+	echo ======================================================
+
     fi
 fi
 

@@ -155,8 +155,20 @@ dct kslhub samkos/kslhub
 docker login
 docker push samkos/kslhub
 
-dk kslhub
 
+dk kslhub_dev
+docker build -t kslhub .
+dk kslhub_dev
+dc rm kslhub_dev
+docker run --name kslhub_dev -h kslhub -e DEV=1 -d -p 10.68.58.171:7000:8000 -p 33333:22 kslhub 
+d logs -f kslhub_dev
+db kslhub_dev
+su - hub
+. ./kslhub_init_env.sh
+kslhub -f docker_prod
+
+
+dk kslhub_prod
 docker build -t kslhub_prod .
 dk prod
 dc rm prod
