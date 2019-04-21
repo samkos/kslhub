@@ -295,6 +295,7 @@ class BatchSpawnerBase(Spawner):
                         vars = vars + "export %s=%s\n" % (v,os.getenv(v))
                 vars = vars + \
                        "export USER=__USER__" + \
+                       "\nexport HOME=/home/__USER__" + \
                        "\nexport KSLHUB_ROOT=__KSLHUB_ROOT__" +\
                        "\n. $KSLHUB_ROOT/kslhub_init_env.sh" +\
                        "\n\n" +\
