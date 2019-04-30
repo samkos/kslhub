@@ -1,0 +1,125 @@
+version: "2.2"
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.mysql
+      cache_from:
+        - kslhub:latest
+    hostname: mysql
+    container_name: mysql
+    environment:
+      SLURM_CLUSTER: 1
+      MYSQL: 1    
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
+      - var_run_mysql:/var/run/mysql
+    expose:
+      - "3306"
+
+
+  slurmdbd:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.slurm
+      cache_from:
+        - kslhub:latest
+    command: ["start.sh"]
+    container_name: slurmdbd
+    hostname: slurmdbd
+    environment:
+      SLURM_CLUSTER: 1
+      SLURM_DB: 1
+    volumes:
+      - var_run_mysql:/var/run/mysql
+      - var_lib_mysql:/var/lib/mysql
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - var_log_slurm:/var/log/slurm
+    expose:
+      - "6819"
+    depends_on:
+      - mysql
+
+  # slurmctld:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile.slurm
+  #     cache_from:
+  #       - kslhub:latest
+  #   command: ["start.sh"]
+  #   container_name: slurmctld
+  #   hostname: slurmctld
+  #   environment:
+  #     SLURM_CLUSTER: 1
+  #     SLURM_CTLD: 1
+  #   volumes:
+  #     - var_lib_mysql:/var/lib/mysql
+  #     - etc_munge:/etc/munge
+  #     - etc_slurm:/etc/slurm
+  #     - slurm_jobdir:/data
+  #     - var_log_slurm:/var/log/slurm
+  #   expose:
+  #     - "6817"
+  #   depends_on:
+  #     - "slurmdbd"
+
+  # c1:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile.slurm
+  #     cache_from:
+  #       - kslhub:latest
+  #   # image: kslhub
+  #   command: ["start.sh"]
+  #   hostname: c1
+  #   container_name: c1
+  #   environment:
+  #     SLURM_CLUSTER: 1
+  #     SLURM_D: 1
+  #   volumes:
+  #     - var_lib_mysql:/var/lib/mysql
+  #     - etc_munge:/etc/munge
+  #     - etc_slurm:/etc/slurm
+  #     - slurm_jobdir:/data
+  #     - var_log_slurm:/var/log/slurm
+  #     - home:/home
+  #   expose:
+  #     - "6818"
+  #   depends_on:
+  #     - "slurmctld"
+
+
+  # kslhub:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile.kslhub
+  #   image: kslhub
+  #   command: ["start.sh"]
+  #   container_name: kslhub
+  #   hostname: kslhub
+  #   environment:
+  #     SLURM_CLUSTER: 1
+  #     KSLHUB: 1
+  #   volumes:
+  #     - etc_munge:/etc/munge
+  #     - etc_slurm:/etc/slurm
+  #     - slurm_jobdir:/data
+  #     - var_log_slurm:/var/log/slurm
+  #     - home:/home
+  #   ports:
+  #       - "127.0.0.1:8000:8000"
+  #   expose:
+  #     - "8000"
+  #   depends_on:
+  #     - c1
+
+volumes:
+  etc_munge:
+  etc_slurm:
+  slurm_jobdir:
+  var_lib_mysql:
+  var_run_mysql:
+  var_log_slurm:
+  home:

@@ -4,7 +4,7 @@ if [ -z ${SLURM_CLUSTER} ] ; then
     echo ======================================================
     echo Setting up /etc/hosts file
     echo ======================================================
-    /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c5 mysql >> /etc/hosts "
+    /bin/sh -c " echo 127.0.0.1 c1 c2 c3 c4 c5 mysql slurmctld slurmdbd >> /etc/hosts "
 
     gosu munge /usr/sbin/munged 
     /usr/sbin/sshd 
@@ -33,24 +33,34 @@ if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_DB} ]; then
     echo ======================================================
     echo starting slurmdbd
     echo ======================================================
-    slurmdbd 
-    echo waiting for slurmdbd to connect to mysql 
-    sleep 5 
-fi
+    if [ ${SLURM_CLUSTER} ]; then
+       slurmdbd  -D
+    else
+	slurmdbd
+    fi
+ fi
 
 if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_D} ]; then
+    echo waiting for slurmdbd to connect to mysql 
+    sleep 5 
     echo ======================================================
     echo starting slurm nodes c1
     echo ======================================================
     
-    slurmd -N c1 
-    slurmd -N c2  
-    slurmd -N c3  
-    slurmd -N c4  
-    slurmd -N c5
+    if [ ${SLURM_CLUSTER} ]; then
+	slurmd -D
+    else
+	slurmd -N c1 
+	slurmd -N c2  
+	slurmd -N c3  
+	slurmd -N c4  
+	slurmd -N c5
+    fi
 fi
 
 if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_CTLD} ]; then
+    echo waiting for slurmdbd to connect to mysql 
+    sleep 5 
     echo ======================================================
     echo setting up slurm cluster and starting slurm controller 
     echo ======================================================
@@ -58,7 +68,11 @@ if  [ -z ${SLURM_CLUSTER} ] ||  [ ${SLURM_CTLD} ]; then
     sacctmgr -i add cluster sk 
     sacctmgr -i add account main Cluster=sk Description="Main Account" Organization="KSLHUB" 
     sacctmgr -i add user hub,alice,bob Account=main 
-    /usr/sbin/slurmctld 
+    if [ ${SLURM_CLUSTER} ]; then
+	/usr/sbin/slurmctld -D
+    else
+	/usr/sbin/slurmctld
+    fi
     cron
 fi
 

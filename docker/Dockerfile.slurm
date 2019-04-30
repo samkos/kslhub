@@ -109,42 +109,10 @@ RUN touch /var/log/cron.log
 # Run the command on container startup
 CMD cron && tail -f /var/log/cron.log
 
-COPY configure_mysql.sh /configure_mysql.sh 
-RUN  chmod +x /configure_mysql.sh  &&  /configure_mysql.sh mysqld
 
 
 
-
-WORKDIR /home/hub
-
-RUN gosu hub git clone -b dev https://github.com/samkos/kslhub.git .
-
-
-RUN  gosu hub mkdir -p /home/hub/NOTEBOOKS \
-    && gosu bob mkdir -p /home/bob/NOTEBOOKS \	
-    && gosu alice mkdir -p /home/alice/NOTEBOOKS 
-
-COPY Install_base.sh /home/hub/scripts/
-
-RUN chown -R hub.users /home/hub \
-    && gosu hub bash  ./scripts/Install_base.sh
-
-COPY Install_conda_extra.sh /home/hub/scripts/
-RUN  gosu hub bash  ./scripts/Install_conda_extra.sh
-
-COPY Install_julia_and_R.sh /home/hub/scripts/
-RUN  gosu hub bash  ./scripts/Install_julia_and_R.sh
-
-COPY Install_c++.sh /home/hub/scripts/
-RUN  gosu hub bash  ./scripts/Install_c++.sh
-
-# COPY Install_ruby.sh /home/hub/scripts/
-# RUN  gosu hub bash  ./scripts/Install_ruby.sh
-
-# RUN apt install libzmq3-dev 
-
-
-COPY slurm.all_in_one.conf /etc/slurm/slurm.conf
+COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
 
 

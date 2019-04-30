@@ -1,9 +1,9 @@
 echo ====================================================================================================  
 echo KSLHUB Installation Step 1: initialize environment
 echo ====================================================================================================  
-echo ====================================================================================================  >> Install_here.log
-echo KSLHUB Installation Step 1: initialize environment  >> Install_here.log
-echo ====================================================================================================  >> Install_here.log
+echo ====================================================================================================  
+echo KSLHUB Installation Step 1: initialize environment  
+echo ====================================================================================================  
 
 export SRC_DIR=$PWD
 export INSTALL_DIR=$PWD
@@ -13,7 +13,7 @@ mkdir -p $BUILD_DIR $INSTALL_DIR
 export CONDA_DIR=$INSTALL_DIR/kslhub_conda_env
 export HUB_PORT=8888
 
-cat >kslhub_init_env.sh << EOF
+cat > kslhub_init_env.sh << EOF
 export SRC_DIR=$PWD
 export INSTALL_DIR=$PWD
 export BUILD_DIR=\$INSTALL_DIR/BUILD
@@ -31,18 +31,22 @@ source activate  \$CONDA_DIR
 EOF
 
 
+
+
 if [ -e $BUILD_DIR/miniconda ]
 then
     echo     miniconda base environment is already installed in $BUILD_DIR/miniconda
 else
     echo KSLHUB Installation Step 1.1:install miniconda 3.7
-    echo KSLHUB Installation Step 1.1:install miniconda 3.7  >> Install_here.log
-
+    
     mkdir -p $BUILD_DIR/MINICONDA
     cd $BUILD_DIR/MINICONDA
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh >> Install_here.log 2&>1
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  >> ${SRC_DIR}/Install_here.log 2>&1
     chmod +x ./Miniconda3-latest-Linux-x86_64.sh
-    ./Miniconda3-latest-Linux-x86_64.sh -p $BUILD_DIR/miniconda -b >> Install_here.log 2&>1
+    ./Miniconda3-latest-Linux-x86_64.sh -p $BUILD_DIR/miniconda -b >> ${SRC_DIR}/Install_here.log 2>&1
+    #tail -10  ${SRC_DIR}/Install_here.log
+    echo miniconda base environment installed...
+    #ls $BUILD_DIR/miniconda/bin -l
 fi
 
 cd $SRC_DIR
@@ -53,49 +57,103 @@ then
     . ./kslhub_init_env.sh
 else
     echo ====================================================================================================  
-    echo ====================================================================================================  >> Install_here.log
+    echo ====================================================================================================  
     echo   creation of dedicated miniconda environment where to install kshlub
-    echo ====================================================================================================  >> Install_here.log
-    echo KSLHUB Installation Step 1.2: creation of dedicated miniconda environment where to install kshlub  >> Install_here.log
+    echo ====================================================================================================  
+    echo KSLHUB Installation Step 1.2: creation of dedicated miniconda environment where to install kshlub  
     echo Installing conda environment to host kslhub in $CONDA_DIR
-    conda create -y -p $CONDA_DIR pip python=3.7 >> Install_here.log 2&>1
-    source activate  $CONDA_DIR >> Install_here.log 2&>1
-    conda install -y -c  conda-forge/label/cf201901 configurable-http-proxy==3.1.0 nodejs==8.10 >> Install_here.log 2&>1
+    . ./kslhub_init_env.sh  >> ${SRC_DIR}/Install_here.log 2>&1
+    conda create -y -p $CONDA_DIR pip python=3.7  >> ${SRC_DIR}/Install_here.log 2>&1
+    source activate  $CONDA_DIR  >> ${SRC_DIR}/Install_here.log 2>&1
+    conda install -y -c  conda-forge/label/cf201901 configurable-http-proxy==3.1.0 nodejs==8.10  >> ${SRC_DIR}/Install_here.log 2>&1
 fi
 
 
-echo ====================================================================================================  >> Install_here.log
-echo KSLHUB Installation Step 2: Installation of kslhub  >> Install_here.log
+
+if [ -e $CONDA_DIR/bin/julia ]
+then
+    echo     julia base environment is already installed in $BUILD_DIR/miniconda
+else
+    echo installing julia in Jupyter
+    
+    cd ${BUILD_DIR}
+    wget https://julialang-s3.julialang.org/bin/linux/x64/1.0/julia-1.0.3-linux-x86_64.tar.gz >> ${SRC_DIR}/Install_here.log 2>&1
+    tar xf julia-1.0.3-linux-x86_64.tar.gz
+    rm julia-1.0.3-linux-x86_64.tar.gz
+    
+    cd $CONDA_DIR/bin
+    ln -s ${BUILD_DIR}/julia-1.0.3/bin/julia
+    cd ${BUILD_DIR}
+    echo using Pkg   > julia_in_jupyter.jl 
+    echo Pkg.add\(\"IJulia\"\)   >> julia_in_jupyter.jl 
+    JUPYTER=$(which jupyter) julia  ./julia_in_jupyter.jl >> ${SRC_DIR}/Install_here.log 2>&1
+    echo julia installed in Jupyter
+fi
+
+# if [ -e $CONDA_DIR/bin/R ]
+# then
+#     echo     R base environment is already installed in $BUILD_DIR/miniconda
+# else
+#     echo installing R in Jupyter
+#     source activate  $CONDA_DIR 
+    
+#     conda install -c r r-essentials  -y >> ${SRC_DIR}/Install_here.log 2>&1
+#     echo install.packages\(\'IRkernel\'\) > R_in_jupyter.R
+#     echo install.packages\(\'IRdisplay\'\) >> R_in_jupyter.R
+#     Rscript R_in_jupyter.R >> ${SRC_DIR}/Install_here.log 2>&1
+#     echo R installed correctly in Jupyter
+# fi
+
+
+# if [ -e $CONDA_DIR/bin/R ]
+# then
+#     echo     Ruby base environment is already installed in $BUILD_DIR/miniconda
+# else
+#     echo installing Ruby in Jupyter
+#     source activate  $CONDA_DIR 
+#     conda install ruby jupyter_console -y
+#     gem install iruby
+#     iruby register --force
+#     echo R installed correctly in Jupyter
+# fi
+
+conda install go -y
+mkdir -p ${BUILD_DIR}/GO/LGO
+export GOPATH=${BUILD_DIR}/GO
+export LGOPATH=${BUILD_DIR}/GO/LGO
+go get golang.org/x/tools/cmd/goimports
+go get github.com/yunabe/lgo/cmd/lgo
+go get -d github.com/yunabe/lgo/cmd/lgo-internal
+
+
+conda install pytorch matplotlib seaborn torchvision -y
+
+
+echo ====================================================================================================  
+echo KSLHUB Installation Step 2: Installation of kslhub  
 echo ====================================================================================================
 echo KSLHUB Installation Step 2: Installation of kslhub
 echo ====================================================================================================
-echo ====================================================================================================  >> Install_here.log
+echo ====================================================================================================  
 
 \rm -rf $CONDA_DIR/lib/python3.?/site-packages/jupyterhub*
 \rm -rf $CONDA_DIR/lib/python3.?/site-packages/kslhub*
 
-if [ -e "setup.py" ]
-then
-    echo Installing kslhub from the current directory
-    pip install . >> Install_here.log 2&>1
-    if [ $? -ne 0 ] ; then
-	tail -10 Install_here.log
-	exit 1
-    fi
-    
-else
-        echo Instlalling kslhub from the last version available in pypi.org
-    pip install kslhub >> Install_here.log 2&>1
-fi
+cd $SRC_DIR
+echo Instlalling kslhub from the last version available in pypi.org
+pip install kslhub  >> ${SRC_DIR}/Install_here.log 2>&1
 
 echo KSLHUB Installation Step 2.1: configuration of kslhub
-echo ====================================================================================================  >> Install_here.log
-echo KSLHUB Installation Step 2.1: configuration of kslhub >> Install_here.log
-echo ====================================================================================================  >> Install_here.log
+echo ====================================================================================================  
+echo KSLHUB Installation Step 2.1: configuration of kslhub 
+echo ====================================================================================================  
 
 
 cd $INSTALL_DIR
+. ./kslhub_init_env.sh
 kslhub -h
-kslhub --jupyter-config
+kslhub --jupyter-config >> ${SRC_DIR}/Install_here.log 2>&1
+
+echo kslhub is installed and configured...
 
 

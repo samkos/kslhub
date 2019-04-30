@@ -149,7 +149,7 @@ docker build -t kslhub .
  dk kslhub
 dc rm kslhub
 docker run --name kslhub -h kslhub  -d -p 10.68.58.171:7000:8000 -p 33333:22 kslhub 
-#docker run --name kslhub -h kslhub  -d -p 7007:8000 -p 33333:22 samkos/kslhub
+#docker run --name kslhub -h kslhub  -d -p 7007:9799 -p 33333:22 samkos/kslhub
 d logs -f kslhub
 dct kslhub samkos/kslhub
 docker login
@@ -177,7 +177,7 @@ dk prod
 docker build -t kslhub_prod .
 dk prod
 dc rm prod
-docker run --name prod -h kslhub  -d -p 7777:8000 -p 33334:22 kslhub_prod
+docker run --name prod -h kslhub  -d -p 10.68.58.171:7777:8000 -p 33334:22 kslhub_prod
 d logs -f  prod
 
 
@@ -478,6 +478,25 @@ install.packages('IRdisplay')
 q()
 n
 EOF
+
+
+. ./kslhub_init_env.sh
+cd ${BUILD_DIR}
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.0/julia-1.0.3-linux-x86_64.tar.gz
+tar xf julia-1.0.3-linux-x86_64.tar.gz
+rm julia-1.0.3-linux-x86_64.tar.gz
+cd miniconda/bin
+ln -s ../../julia-1.0.3/bin/julia
+cd ../../..
+. ksl*sh
+JUPYTER=$(which jupyter) julia
+
+type at Julia prompt:
+
+using Pkg
+
+Pkg.add("IJulia")
+
 
 
 
