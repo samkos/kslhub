@@ -36,6 +36,7 @@ then
         echo R installed correctly in Jupyter
     fi
 
+    cd ${SRC_DIR}
 
 
 else

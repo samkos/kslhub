@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --time=0:20:00
-#SBATCH -N __nb_nodes;select;# nodes;1,2,3,4,8,16,32,64,128,512,654,1024__
+#SBATCH -n __nb_tasks;select;# tasxks;1,2,3,4,8,16,32,64,128,512,1024__
 #SBATCH --partition=__partition;select;Queue;debug,workq__
 #SBATCH -J jupyterhub-singleuser
 #SBATCH -o __JOB_DIR__/__job_name;input;Job Name;text;my_job__.%j.out

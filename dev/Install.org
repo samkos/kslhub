@@ -1,4 +1,11 @@
 * install  on a workstation
+** whole procedure
+. ./scripts/Install_base.sh
+. ./scripts/Install_conda_extra.sh
+. ./scripts/Install_julia_and_R.sh
+. ./scripts/Install_c++.sh
+. ./scripts/Debug_here.sh
+
 ** init environment
 
 #export SRC_DIR=/project/k01/kortass/CLE6/KSLHUB_TEST3/
